@@ -16,7 +16,7 @@ import type { RootState } from '../../../state';
 // import SidebarComponent from '../../components/sidebarComponent/SidebarComponent';
 // import Header from '../../components/header/Header';
 // import Modal from '../modal/Modal';
-import './Dashboard.css';
+import './DashboardLayout.css';
 
 const Dashboard = () => {
   const auth = useSelector((state: RootState) => state.auth);
