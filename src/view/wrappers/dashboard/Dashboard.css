@@ -1,0 +1,117 @@
+.dashboard-wrapper {
+  position: fixed;
+  line-height: 2rem !important;
+  /* background-color: green; */
+  /* display: none; */
+}
+
+.dashboard-wrapper div p {
+  line-height: 2rem !important;
+}
+
+.dashboard-wrapper .dashboard__header {
+  position: absolute;
+  /* z-index: 1; */
+  left: 18vw;
+  width: 72vw;
+  -webkit-transition: width 0.5s;
+  transition: width 0.5s;
+}
+@media (max-width: 1000px) {
+  .dashboard-wrapper .dashboard__header {
+    /* width: 28vw; */
+    -webkit-transition: width 0.5s;
+    transition: width 0.5s;
+  }
+}
+
+.dashboard-wrapper .expand {
+  width: 95vw !important;
+  left: 5vw;
+}
+
+.dashboard-wrapper .sidebar-content {
+  /* overflow: auto; */
+  min-height: 100vh;
+  position: fixed;
+  width: 18vw;
+  -webkit-transition: width 0.5s;
+  transition: width 0.5s;
+}
+@media (max-width: 1000px) {
+  .dashboard-wrapper .sidebar-content {
+    width: 28vw;  -webkit-transition: width 0.5s;
+  transition: width 0.5s;
+  }
+}
+
+.dashboard-wrapper .sidebar-content div p {
+  line-height: 2rem !important;
+}
+
+.dashboard-wrapper .sidebar-content-modal {
+  /* overflow: auto; */
+  min-height: 100vh;
+  width: 100%;
+}
+
+.dashboard-wrapper .sidebar-content-modal > div {
+  width: 100%;
+}
+
+.dashboard-wrapper .sidebar-content-modal .sidebarComponent__logo-div {
+  width: 100%;
+}
+
+.dashboard-wrapper .shrink {
+  /* min-height: 100vh; */
+  /* position: fixed; */
+  width: 5vw !important;
+  /* -webkit-transition: width 0.5s;
+  transition: width 0.5s; */
+}
+
+.dashboard-wrapper > .right {
+  width: 100%;
+  overflow: hidden;
+}
+
+.dashboard-wrapper > .right div {
+  line-height: 2rem !important;
+}
+
+.dashboard-wrapper .main-content-wrapper {
+  margin-top: 8rem;
+  -webkit-transition: width 0.5s;
+  transition: width 0.5s;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  width: 82vw;
+  position: fixed;
+  right: 0;
+}
+@media (max-width: 1000px) {
+  .dashboard-wrapper .main-content-wrapper {
+    width: 72vw;  -webkit-transition: width 0.5s;
+  transition: width 0.5s;
+  }
+}
+
+@media (max-width: 700px) {
+  .dashboard-wrapper .main-content-wrapper,
+  .dashboard-wrapper .dashboard__header {
+    width: 100vw;
+  }
+
+  .dashboard-wrapper .dashboard__header {
+    left: 0;
+  }
+  .dashboard-wrapper .sidebar-content {
+    display: none;
+  }
+}
