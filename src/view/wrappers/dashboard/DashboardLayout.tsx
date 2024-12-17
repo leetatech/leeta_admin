@@ -13,10 +13,11 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import type { RootState } from '../../../state';
 // import { RASContext } from '../../../context/Context';
-// import SidebarComponent from '../../components/sidebarComponent/SidebarComponent';
+import Sidebar from '../../components/sidebar/Sidebar';
+import Header from '../../components/header/Header';
 // import Header from '../../components/header/Header';
 // import Modal from '../modal/Modal';
-import './Dashboard.css';
+import './DashboardLayout.css';
 
 const Dashboard = () => {
   const auth = useSelector((state: RootState) => state.auth);
@@ -57,26 +58,26 @@ const Dashboard = () => {
                 <SidebarComponent setShowLogoutModal={setShowLogoutModal} showLogoutModal={showLogoutModal} removeShrink={true} closeModal={() => setSiderBarOpen(false)} setHeadTag={setHeadTag} />
               </div>
             </Modal> */}
-          {/* <div className={`sidebar-content border-r ${shrink ? 'shrink' : ''}`}>
-              <SidebarComponent
-                setShowLogoutModal={setShowLogoutModal}
-                showLogoutModal={showLogoutModal}
-                shrinked={shrink}
-                setShrinked={setShrink}
-                closeModal={() => setSiderBarOpen(false)}
-                setHeadTag={setHeadTag}
-              />
-            </div> */}
+          <div className={`sidebar-content border-r ${shrink ? 'shrink' : ''}`}>
+            <Sidebar
+              setShowLogoutModal={setShowLogoutModal}
+              showLogoutModal={showLogoutModal}
+              shrinked={shrink}
+              setShrinked={setShrink}
+              closeModal={() => setSiderBarOpen(false)}
+              setHeadTag={setHeadTag}
+            />
+          </div>
           <div className='right'>
             <div className={`dashboard__header ${shrink ? 'expand' : ''}`}>
-              {/* <Header
+              <Header
                 shrinked={shrink}
                 setShrinked={setShrink}
                 burgerClick={() => {
                   setSiderBarOpen(true);
                 }}
                 headTag={headTag}
-              /> */}
+              />
             </div>
             <div ref={mainRef} style={{ overflow: 'auto', height: '100vh' }} className={`main-content-wrapper card-bg-new ${shrink ? 'expand' : ''}`}>
               <Suspense fallback={<>Loading</>}>

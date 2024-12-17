@@ -7,15 +7,17 @@ import routeNames from './RouteNames';
 import SignIn from '../view/pages/auth/Signin';
 
 // Import lazy-loaded components
-const Dashboard = lazy(async () => await import('../view/wrappers/dashboard/Dashboard'));
+const DashboardLayout = lazy(async () => await import('../view/wrappers/dashboard/DashboardLayout'));
+const Dashboard = lazy(async () => await import('../view/pages/Dashboard/Dashboard'));
 
 const Router = () => {
   const { auth } = useSelector((state: RootState) => state);
 
   const routes = [
+    { path: routeNames.signin, element: <SignIn /> },
     {
       path: routeNames.home,
-      element: <Dashboard />,
+      element: <DashboardLayout />,
       children: [{ path: routeNames.dashboard, element: <Dashboard /> }],
     },
     {
