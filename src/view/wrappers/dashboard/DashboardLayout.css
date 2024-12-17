@@ -40,8 +40,9 @@
 }
 @media (max-width: 1000px) {
   .dashboard-wrapper .sidebar-content {
-    width: 28vw;  -webkit-transition: width 0.5s;
-  transition: width 0.5s;
+    width: 28vw;
+    -webkit-transition: width 0.5s;
+    transition: width 0.5s;
   }
 }
 
@@ -94,11 +95,13 @@
   width: 82vw;
   position: fixed;
   right: 0;
+  background: #f6f8fc;
 }
 @media (max-width: 1000px) {
   .dashboard-wrapper .main-content-wrapper {
-    width: 72vw;  -webkit-transition: width 0.5s;
-  transition: width 0.5s;
+    width: 72vw;
+    -webkit-transition: width 0.5s;
+    transition: width 0.5s;
   }
 }
 

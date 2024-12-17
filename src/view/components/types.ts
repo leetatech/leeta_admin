@@ -4,7 +4,6 @@ export enum TypographyVariant {
     BODY_DEFAULT_MEDIUM,
     BODY_SMALL_MEDIUM,
     SMALL
-   
   }
   
   export interface TypographyProps {

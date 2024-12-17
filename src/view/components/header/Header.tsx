@@ -63,7 +63,13 @@ export default function Header({ shrinked, setShrinked, burgerClick, headTag }: 
 
   return (
     <>
-      <div className={`header-content sidebar-bg  ${shrinked ? 'expand' : ''}`}>
+      <div className={`header-content ${shrinked ? 'expand' : ''}`}>
+        {shrinked && (
+          <div onClick={() => setShrinked(false)}>
+            <img src={shrink} alt='icon' />
+          </div>
+        )}
+
         {/* <div className='left-hand'>
           <div className='menu-box burger-icon-color' onClick={burgerClick}>
             <img src={menu} alt='menu' />
