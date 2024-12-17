@@ -93,7 +93,6 @@ const Sidebar = ({ shrinked, setShrinked, removeShrink, closeModal, setHeadTag, 
           ) : (
             <div className='logo-img-con full-logo-con'>
               <img src={logo} alt='symbol' className='sidebarComponent__logo-img' />
-              {/* <img src={theme === 'light' ? logoi : logo} alt='logo' className='sidebarComponent__logo' /> */}
               <p className='text-xs-bold ml-2'>Leeta Vendor</p>
             </div>
           )}
