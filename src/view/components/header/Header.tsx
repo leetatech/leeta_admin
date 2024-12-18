@@ -65,8 +65,8 @@ export default function Header({ shrinked, setShrinked, burgerClick, headTag }: 
     <>
       <div className={`header-content ${shrinked ? 'expand' : ''}`}>
         {shrinked && (
-          <div onClick={() => setShrinked(false)}>
-            <img src={shrink} alt='icon' />
+          <div className='h-6 w-6' onClick={() => setShrinked(false)}>
+            <img className='w-full h-full object-cover' src={shrink} alt='icon' />
           </div>
         )}
 

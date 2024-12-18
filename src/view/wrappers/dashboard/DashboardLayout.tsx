@@ -68,7 +68,7 @@ const Dashboard = () => {
               setHeadTag={setHeadTag}
             />
           </div>
-          <div className='right'>
+          <div>
             <div className={`dashboard__header ${shrink ? 'expand' : ''}`}>
               <Header
                 shrinked={shrink}

@@ -89,7 +89,7 @@ const Sidebar = ({ shrinked, setShrinked, removeShrink, closeModal, setHeadTag, 
             </div>
           ) : (
             <div className='logo-img-con full-logo-con'>
-              <img src={logo} alt='symbol' className='sidebarComponent__logo-img' />
+              <img src={logo} alt='symbol' />
               <Typography className='font-bold ml-3' variant={TypographyVariant.BODY_DEFAULT_MEDIUM}>
                 Leeta Vendor
               </Typography>
