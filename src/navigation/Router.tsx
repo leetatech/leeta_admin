@@ -1,5 +1,5 @@
-import React, { Suspense, lazy, useState } from 'react';
-import { createBrowserRouter, RouterProvider, useRoutes } from 'react-router-dom';
+import {lazy} from 'react';
+import { createBrowserRouter, RouterProvider} from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import { type RootState } from '../state';
@@ -8,13 +8,11 @@ import SignIn from '../view/pages/auth/Signin';
 
 // Import lazy-loaded components
 const DashboardLayout = lazy(async () => await import('../view/wrappers/dashboard/DashboardLayout'));
-const Dashboard = lazy(async () => await import('../view/pages/dashboard/Dashboard'));
+const Dashboard = lazy(async () => await import('../view/wrappers/dashboard/DashboardLayout'));
 const Orders = lazy(async () => await import('../view/pages/Orders'));
 const Settings = lazy(async () => await import('../view/pages/Settings'));
 
 const Router = () => {
-  const { auth } = useSelector((state: RootState) => state);
-
   const routes = [
     { path: routeNames.signin, element: <SignIn /> },
     {

@@ -18,6 +18,8 @@ import Header from '../../components/header/Header';
 // import Header from '../../components/header/Header';
 // import Modal from '../modal/Modal';
 import './DashboardLayout.css';
+import COMING_SOON from "../../../assets/coming_soon.svg";
+
 
 const Dashboard = () => {
   const auth = useSelector((state: RootState) => state.auth);
@@ -70,17 +72,18 @@ const Dashboard = () => {
           </div>
           <div>
             <div className={`dashboard__header ${shrink ? 'expand' : ''}`}>
-              <Header
+              {/* <Header
                 shrinked={shrink}
                 setShrinked={setShrink}
                 burgerClick={() => {
                   setSiderBarOpen(true);
                 }}
                 headTag={headTag}
-              />
+              /> */}
             </div>
             <div ref={mainRef} style={{ overflow: 'auto', height: '100vh' }} className={`main-content-wrapper card-bg-new ${shrink ? 'expand' : ''}`}>
               <Suspense fallback={<>Loading</>}>
+
                 <Outlet />
               </Suspense>
             </div>
