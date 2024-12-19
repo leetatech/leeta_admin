@@ -1,25 +1,11 @@
-/* eslint-disable multiline-ternary */
-/* eslint-disable @typescript-eslint/comma-dangle */
-/* eslint-disable @typescript-eslint/no-confusing-void-expression */
-/* eslint-disable @typescript-eslint/semi */
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/extensions */
 import React, { useContext, useEffect, useState, useRef, Suspense } from 'react';
 import { useLocation, Outlet } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-// import useWindowSize from '../../../hooks/useWindowSize';
-// import ErrorBoundary from '../error-boundary/ErrorBoundary';
-// import FallBackUiLoad from '../../components/fall-back-ui-load/fallbackUILoad';
 
 import type { RootState } from '../../../state';
-// import { RASContext } from '../../../context/Context';
 import Sidebar from '../../components/sidebar/Sidebar';
 import Header from '../../components/header/Header';
-// import Header from '../../components/header/Header';
-// import Modal from '../modal/Modal';
 import './DashboardLayout.css';
-import COMING_SOON from "../../../assets/coming_soon.svg";
-
 
 const Dashboard = () => {
   const auth = useSelector((state: RootState) => state.auth);
@@ -72,18 +58,17 @@ const Dashboard = () => {
           </div>
           <div>
             <div className={`dashboard__header ${shrink ? 'expand' : ''}`}>
-              {/* <Header
+              <Header
                 shrinked={shrink}
                 setShrinked={setShrink}
                 burgerClick={() => {
                   setSiderBarOpen(true);
                 }}
                 headTag={headTag}
-              /> */}
+              />
             </div>
             <div ref={mainRef} style={{ overflow: 'auto', height: '100vh' }} className={`main-content-wrapper card-bg-new ${shrink ? 'expand' : ''}`}>
               <Suspense fallback={<>Loading</>}>
-
                 <Outlet />
               </Suspense>
             </div>
