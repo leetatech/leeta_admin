@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 
 import LoginForm from "../../components/form/LoginForm";
 
-const Popout: React.FC = () => {
+const Signin: React.FC = () => {
   return (
     <header className="pt-10 md:mt-0 h-auto md:min-h-[80vh] flex flex-col items-center bg-[#F0F0F0] h-screen relative">
       <motion.div
@@ -66,4 +66,4 @@ const Popout: React.FC = () => {
   );
 };
 
-export default Popout;
+export default Signin;
