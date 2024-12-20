@@ -1,25 +1,18 @@
-import React, { useContext, useEffect, useState, useRef, Suspense } from 'react';
+import React, {useEffect, useState, useRef, Suspense } from 'react';
 import { useLocation, Outlet } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-
-import type { RootState } from '../../../state';
 import Sidebar from '../../components/sidebar/Sidebar';
 import Header from '../../components/header/Header';
 import './DashboardLayout.css';
 
 const Dashboard = () => {
-  const auth = useSelector((state: RootState) => state.auth);
 
   const mainRef = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
-  //   const { isMobile } = useWindowSize();
   const [shrink, setShrink] = useState(false);
-  const [siderBarOpen, setSiderBarOpen] = useState(false);
+  // Only the setter is needed for this case
+  const [, setSiderBarOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [headTag, setHeadTag] = useState('');
-  const dispatch = useDispatch<any>();
-
-  useEffect(() => {}, []);
 
   useEffect(() => {
     if (mainRef.current != null) {

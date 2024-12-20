@@ -1,14 +1,11 @@
 import {lazy} from 'react';
 import { createBrowserRouter, RouterProvider} from 'react-router-dom';
-import { useSelector } from 'react-redux';
-
-import { type RootState } from '../state';
 import routeNames from './RouteNames';
 import SignIn from '../view/pages/auth/Signin';
 
 // Import lazy-loaded components
 const DashboardLayout = lazy(async () => await import('../view/wrappers/dashboard/DashboardLayout'));
-const Dashboard = lazy(async () => await import('../view/pages/dashboard/Dashboard'));
+const Dashboard = lazy(async () => await import('../view/pages/Dashboard/Dashboard'));
 const Orders = lazy(async () => await import('../view/pages/Orders'));
 const Settings = lazy(async () => await import('../view/pages/Settings'));
 

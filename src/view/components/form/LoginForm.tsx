@@ -58,7 +58,7 @@ const LoginForm = () => {
           />
           <Typography
             variant={TypographyVariant.BODY_DEFAULT_MEDIUM}
-            className="text-[#FD671E] cursor-pointer"
+            className="text-orange-600 cursor-pointer"
           >
             I forgot my password
           </Typography>

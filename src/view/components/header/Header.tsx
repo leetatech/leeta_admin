@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-
 import { useIcons } from '../../../hooks/useIcons';
-
-import { type RootState } from '../../../state';
 import './Header.css';
+import Typography from '../Typography/Typography';
+import { TypographyVariant } from '../types';
+import { RxAvatar } from "react-icons/rx";
+
 
 interface IFilter {
   title: string;
@@ -23,11 +23,10 @@ interface IProps {
   headTag: string;
 }
 
-export default function Header({ shrinked, setShrinked, burgerClick, headTag }: IProps) {
-  const { logo, shrink } = useIcons();
-  const { auth } = useSelector((state: RootState) => state);
+export default function Header({ shrinked, setShrinked}: IProps) {
+  const { shrink } = useIcons();
 
-  const [dropValue, setDropValue] = useState<IFilter>({
+  const [dropValue] = useState<IFilter>({
     title: '',
     value: '',
     link: '',
@@ -46,14 +45,23 @@ export default function Header({ shrinked, setShrinked, burgerClick, headTag }: 
 
   return (
     <>
-      <div className={`header-content ${shrinked ? 'expand' : ''}`}>
-        {shrinked && (
-          <div className='h-6 w-6' onClick={() => setShrinked(false)}>
-            <img className='w-full h-full object-cover' src={shrink} alt='icon' />
-          </div>
-        )}
-        <div className='user-utils'></div>
-      </div>
+    <div className={`header-content ${shrinked ? 'expand' : ''}`}>
+  {shrinked && (
+    <div className="h-6 w-6" onClick={() => setShrinked(false)}>
+      <img className="w-full h-full object-cover" src={shrink} alt="icon" />
+    </div>
+  )}
+  <div className=" flex justify-end items-end  w-full ">
+    <div className='flex justify-center items-center gap-2 cursor-pointer'>
+
+    <Typography variant={TypographyVariant.BODY_DEFAULT_MEDIUM}>Hi, Oluwaferanmi</Typography>
+    <RxAvatar />
+
+
+    </div>
+  </div>
+</div>
+
     </>
   );
 }

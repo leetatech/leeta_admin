@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-
-import { type RootState } from '../../../state';
 import { Link, useLocation } from 'react-router-dom';
 import NavItem from '../../molecules/NavItem';
 import { useIcons } from '../../../hooks/useIcons';
@@ -18,12 +16,12 @@ interface IProps {
   showLogoutModal: boolean;
 }
 
-const Sidebar = ({ shrinked, setShrinked, removeShrink, closeModal, setHeadTag, setShowLogoutModal, showLogoutModal }: IProps) => {
+const Sidebar = ({ shrinked, setShrinked }: IProps) => {
   const { shrink, logo, home, homei, cart, carti, setting, settingi, logout } = useIcons();
 
   const location = useLocation();
-  const [activeNav, setActiveNav] = useState(1);
-  // const [showLogoutModal, setShowLogoutModal] = useState(false);
+  // Only the setter is needed for this case
+  const [, setActiveNav] = useState(1);
   const SidebarLinkNames = [
     {
       name: 'Dashboard',
@@ -105,8 +103,8 @@ const Sidebar = ({ shrinked, setShrinked, removeShrink, closeModal, setHeadTag, 
         </div>
         <div className='nav-items-wrapper'>
           <div className='nav-items-con2'>
-            {SidebarLinkNamesBottom.map(({ name, to, icon, active }, idx) => (
-              <Link to={to}>
+            {SidebarLinkNamesBottom.map(({ name, to, icon, active},idx ) => (
+              <Link to={to} key={idx}>
                 <NavItem
                   icon={{
                     active: icon[1],
