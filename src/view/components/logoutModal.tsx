@@ -13,23 +13,23 @@ const LogoutModal = ({
 
   return (
     // Overlay
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="fixed w-full h-screen inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       {/* Modal */}
-      <div className="bg-white rounded-t h-44 p-6 w-96 shadow-lg">
+      <div className="bg-white rounded-t h-44 p-6 w-96 shadow-t-lg">
         <div className="flex justify-center flex-col mb-6">
           <h2 className="text-xl font-semibold mb-2">Log Out</h2>
           <p className="text-gray-600">Are you sure you want to log out?</p>
         </div>
-        <div className="flex flex-col gap-3 items-center">
+        <div className="flex flex-col gap-3 justify-center items-center">
           <button 
             onClick={onClose}
-            className="border border-gray-300 rounded-md w-1/2 py-2 hover:bg-gray-50 transition-colors"
+            className="border border-gray-300 rounded-md w-full py-2 hover:bg-gray-50 transition-colors"
           >
             Cancel
           </button>
           <button 
             onClick={onLogout}
-            className="bg-[#DC0121] text-white rounded-md w-1/2 py-2 hover:bg-[#b30018] transition-colors"
+            className="bg-[#DC0121] text-white rounded-md w-full py-2 hover:bg-[#b30018] transition-colors"
           >
             Log out
           </button>
