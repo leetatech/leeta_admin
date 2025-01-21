@@ -4,7 +4,7 @@ import { TypographyVariant } from '../components/types';
 import UPLOAD from '../../assets/uplooad.svg';
 import { TbLogout } from 'react-icons/tb';
 import Modal from '../components/Modal';
-import LogoutModal from '../components/logoutModal';
+import Logout from '../components/logout';
 
 const Settings = () => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -32,7 +32,7 @@ const Settings = () => {
       </section>
 
       <Modal isOpen={showLogoutModal}>
-        <LogoutModal
+        <Logout
           onClose={() => setShowLogoutModal(false)}
           onLogout={() => {
             handleLogout();

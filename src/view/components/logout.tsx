@@ -1,6 +1,6 @@
 import React from 'react';
 
-const LogoutModal = ({ onClose, onLogout }: { onClose: () => void; onLogout: () => void }) => {
+const Logout = ({ onClose, onLogout }: { onClose: () => void; onLogout: () => void }) => {
   // if (!isOpen) return null;
 
   return (
@@ -21,4 +21,4 @@ const LogoutModal = ({ onClose, onLogout }: { onClose: () => void; onLogout: () 
   );
 };
 
-export default LogoutModal;
+export default Logout;
