@@ -6,7 +6,6 @@ interface WhatWentWrongProps {
   onClose: () => void;
   onSubmit: (reason: string) => void;
 }
-
 const WhatWentWrong: React.FC<WhatWentWrongProps> = ({ onClose, onSubmit }) => {
   const [selectedReason, setSelectedReason] = useState('');
   const [declineOrder, setDeclineOrder] = useState(false);

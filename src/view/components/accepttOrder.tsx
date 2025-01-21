@@ -1,9 +1,8 @@
 import React from 'react'
 import successCheck from "../../assets/animation_500_lcqvyner 1@2x.svg"
 interface AcceptOrderProps {
-    isOpen: boolean;  // Whether the modal is open or not
+    isOpen: boolean;  
     onClose: () => void;
-    // onSubmit: (reason: string) => void; // Uncomment if needed
 }
 
 const AcceptOrder: React.FC<AcceptOrderProps> = ({ 

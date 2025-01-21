@@ -4,9 +4,7 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 interface DeclineOrderProps {
     isOpen: boolean;  
-    // Whether the modal is open or not
     onClose: () => void;
-    // onSubmit: (reason: string) => void; // Uncomment if needed
 }
 
 const DeclineOrder: React.FC<DeclineOrderProps> = ({ 

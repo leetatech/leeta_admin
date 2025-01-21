@@ -61,7 +61,6 @@ const Orders = () => {
   const handleCloseDetails = () => setExpandedRow(null);
 
   const handleDecline = () => {
-    // Handle decline logic here
     setIsModalOpen(false);
   };
 

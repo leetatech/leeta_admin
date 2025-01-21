@@ -9,7 +9,6 @@ interface DeclineRequestProps {
 
 const DeclineRequest: React.FC<DeclineRequestProps> = ({ isOpen, onClose, onDecline }) => {
   const [showWhatWentWrong, setShowWhatWentWrong] = useState(false);
-  
   return (
     <>
       {isOpen && (
