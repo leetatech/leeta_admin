@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import Typography from '../components/Typography/Typography';
 import { TypographyVariant } from '../components/types';
 import { useIcons } from '../../hooks/useIcons';
+import AcceptOrder from '../components/accepttOrder';
+import DeclineRequest from '../components/declineRequest';
 
 interface RowData {
   id: number;
@@ -22,6 +24,8 @@ const data: RowData[] = [
 ];
 
 const Orders = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [issModalOpen, setIssModalOpen] = useState(false);
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [expandedRow, setExpandedRow] = useState<number | null>(null);
   const { arrows, filter, phone, mail, avatar, side } = useIcons();
@@ -55,6 +59,10 @@ const Orders = () => {
   };
 
   const handleCloseDetails = () => setExpandedRow(null);
+
+  const handleDecline = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <div className='p-4'>
@@ -189,9 +197,25 @@ const Orders = () => {
               </div>
             </div>
             <div className='flex justify-center gap-40 mt-2 mb-2'>
-              <button className='border border-[#EF0F30] bg-red-100 text-[#EF0F30] px-14 py-2'>Decline</button>
-              <button className='bg-[#3EAF3F] text-white px-14 py-2'>Accept</button>
+              <button 
+                className='border border-[#EF0F30] bg-red-100 text-[#EF0F30] px-14 py-2'
+                onClick={() => setIsModalOpen(true)}
+              >
+                Decline
+              </button>
+              <button
+              onClick={() => setIssModalOpen(true)}
+               className='bg-[#3EAF3F] text-white px-14 py-2'>Accept</button>
             </div>
+            <DeclineRequest 
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+              onDecline={handleDecline}
+            />
+            <AcceptOrder 
+              isOpen={issModalOpen}
+              onClose={() => setIssModalOpen(false)}
+            />
             <button className='mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700' onClick={handleCloseDetails}>
               Back
             </button>
