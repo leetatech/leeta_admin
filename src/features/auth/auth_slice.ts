@@ -30,6 +30,7 @@ const userSlice = createSlice({
     resetState: (state) => {
       state.error = initialState.error;
       state.message = initialState.message;
+      state.userData = initialState.userData;
     },
   },
   extraReducers: (builder) => {
