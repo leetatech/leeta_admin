@@ -1,38 +1,61 @@
-/* eslint-disable @typescript-eslint/return-await */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable @typescript-eslint/comma-dangle */
-/* eslint-disable @typescript-eslint/semi */
-/* eslint-disable @typescript-eslint/strict-boolean-expressions */
-/* eslint-disable @typescript-eslint/no-confusing-void-expression */
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable @typescript-eslint/member-delimiter-style */
-/* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import LoginService from './auth_service';
 
-interface IinitialState {}
+interface IinitialState {
+  error:boolean
+  loading: boolean;
+  userData:Record<string,string>;
+  message:string;
+}
 
-const initialState: IinitialState = {};
+const initialState: IinitialState = {
+  error: false,
+  loading: false,
+  userData: {},
+  message: '',
+};
 
-export const triggerSignin = createAsyncThunk('auth/signin', async (params: Record<string, string>, thunkAPI) => {
+export const triggerSignin = createAsyncThunk('user/signin', async (params: Record<string, string>, thunkAPI) => {
   try {
-    // return await LoginService.signin(params);
+    return await LoginService.signin(params);
   } catch (e: any) {
     return thunkAPI.rejectWithValue(e.message);
   }
 });
 
-const authSlice = createSlice({
-  name: 'auth',
+const userSlice = createSlice({
+  name: 'user',
   initialState,
-  reducers: {},
+  reducers: {
+    resetState: (state) => {
+      state.error = initialState.error;
+      state.message = initialState.message;
+    },
+  },
   extraReducers: (builder) => {
     // SIGN UP
 
     // SIGN IN
-    builder.addCase(triggerSignin.pending, (state) => {});
-    builder.addCase(triggerSignin.fulfilled, (state, action) => {});
-    builder.addCase(triggerSignin.rejected, (state, action) => {});
+    builder.addCase(triggerSignin.pending, (state) => {
+      state.loading = true;
+      state.error = false;
+      state.userData = {};
+      state.message = '';
+    });
+    builder.addCase(triggerSignin.fulfilled, (state, action) => {
+      state.loading = false;
+      state.userData = action.payload!;
+      state.error = false;
+    });
+    builder.addCase(triggerSignin.rejected, (state, action) => {
+      state.loading = false;
+      state.error = true;
+      state.userData = {};
+      state.message = action.payload as unknown as string;
+    });
   },
 });
 
-export default authSlice.reducer;
+export const {resetState} = userSlice.actions;
+
+export default userSlice.reducer;
