@@ -1,24 +1,10 @@
-/* eslint-disable @typescript-eslint/comma-dangle */
-/* eslint-disable @typescript-eslint/semi */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable @typescript-eslint/prefer-optional-chain */
-/* eslint-disable @typescript-eslint/strict-boolean-expressions */
-/* eslint-disable array-callback-return */
-/* eslint-disable multiline-ternary */
-/* eslint-disable @typescript-eslint/member-delimiter-style */
-/* eslint-disable @typescript-eslint/space-before-function-paren */
-import React, { useState, useEffect, useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useLocation } from 'react-router-dom';
-
+import React, { useState, useEffect } from 'react';
 import { useIcons } from '../../../hooks/useIcons';
-
-import { type RootState } from '../../../state';
-
 import './Header.css';
-// interface IProps {
-//   burgerClick: () => void;
-// }
+import Typography from '../Typography/Typography';
+import { TypographyVariant } from '../types';
+import { RxAvatar } from "react-icons/rx";
+
 
 interface IFilter {
   title: string;
@@ -37,14 +23,10 @@ interface IProps {
   headTag: string;
 }
 
-export default function Header({ shrinked, setShrinked, burgerClick, headTag }: IProps) {
-  const { logo, shrink } = useIcons();
-  const { auth } = useSelector((state: RootState) => state);
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
-  const dispatch = useDispatch<any>();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [dropValue, setDropValue] = useState<IFilter>({
+export default function Header({ shrinked, setShrinked}: IProps) {
+  const { shrink } = useIcons();
+
+  const [dropValue] = useState<IFilter>({
     title: '',
     value: '',
     link: '',
@@ -63,24 +45,23 @@ export default function Header({ shrinked, setShrinked, burgerClick, headTag }: 
 
   return (
     <>
-      <div className={`header-content ${shrinked ? 'expand' : ''}`}>
-        {shrinked && (
-          <div className='h-6 w-6' onClick={() => setShrinked(false)}>
-            <img className='w-full h-full object-cover' src={shrink} alt='icon' />
-          </div>
-        )}
+    <div className={`header-content ${shrinked ? 'expand' : ''}`}>
+  {shrinked && (
+    <div className="h-6 w-6" onClick={() => setShrinked(false)}>
+      <img className="w-full h-full object-cover" src={shrink} alt="icon" />
+    </div>
+  )}
+  <div className=" flex justify-end items-end  w-full ">
+    <div className='flex justify-center items-center gap-2 cursor-pointer'>
 
-        {/* <div className='left-hand'>
-          <div className='menu-box burger-icon-color' onClick={burgerClick}>
-            <img src={menu} alt='menu' />
-          </div>
-          <div className='head-tag'>
-            <Typography>{headTag}</Typography>
-          </div>
-        </div> */}
+    <Typography variant={TypographyVariant.BODY_DEFAULT_MEDIUM}>Hi, Oluwaferanmi</Typography>
+    <RxAvatar />
 
-        <div className='user-utils'></div>
-      </div>
+
+    </div>
+  </div>
+</div>
+
     </>
   );
 }

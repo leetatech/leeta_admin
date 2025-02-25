@@ -1,13 +1,14 @@
-/* eslint-disable @typescript-eslint/comma-dangle */
-/* eslint-disable @typescript-eslint/semi */
 import { configureStore } from '@reduxjs/toolkit';
 import thunkMiddleware from 'redux-thunk';
 import { setDispatchFunction } from './storeInstance';
 import authReducer from '../features/auth/auth_slice';
-
+import orderReducer from '../features/orders/order_slice';
 
 const store = configureStore({
-  reducer: { auth: authReducer },
+  reducer: { 
+    user: authReducer,
+    order: orderReducer 
+  },
   // middleware: [thunkMiddleware],
 });
 

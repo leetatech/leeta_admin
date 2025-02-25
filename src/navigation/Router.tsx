@@ -1,8 +1,5 @@
-import React, { Suspense, lazy, useState } from 'react';
-import { createBrowserRouter, RouterProvider, useRoutes } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-
-import { type RootState } from '../state';
+import {lazy} from 'react';
+import { createBrowserRouter, RouterProvider} from 'react-router-dom';
 import routeNames from './RouteNames';
 import SignIn from '../view/pages/auth/Signin';
 
@@ -13,8 +10,6 @@ const Orders = lazy(async () => await import('../view/pages/Orders'));
 const Settings = lazy(async () => await import('../view/pages/Settings'));
 
 const Router = () => {
-  const { auth } = useSelector((state: RootState) => state);
-
   const routes = [
     { path: routeNames.signin, element: <SignIn /> },
     {
