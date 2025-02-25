@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import NavItem from '../../molecules/NavItem';
 import { useIcons } from '../../../hooks/useIcons';
-import './Sidebar.css';
 import Typography from '../Typography/Typography';
 import { TypographyVariant } from '../types';
+import './Sidebar.css';
 
 interface IProps {
   shrinked?: boolean;
