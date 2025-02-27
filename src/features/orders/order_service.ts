@@ -24,7 +24,6 @@ export default class OrderService {
       throw new Error(response.data.message as string);
     }
     if (response.data) {
-      console.log(response.data);
       return response.data as Record<string, string | Record<string, string>[]>;
     }
   }
