@@ -5,7 +5,7 @@ import SignIn from '../view/pages/auth/Signin';
 
 // Import lazy-loaded components
 const DashboardLayout = lazy(async () => await import('../view/wrappers/dashboard/DashboardLayout'));
-const Dashboard = lazy(async () => await import('../view/pages/Dashboard/Dashboard'));
+const Dashboard = lazy(async () => await import('../view/pages/dashboard/Dashboard'));
 const Orders = lazy(async () => await import('../view/pages/Orders'));
 const Settings = lazy(async () => await import('../view/pages/Settings'));
 

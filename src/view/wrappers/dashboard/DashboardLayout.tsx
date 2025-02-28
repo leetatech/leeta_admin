@@ -1,10 +1,15 @@
-import React, {useEffect, useState, useRef, Suspense } from 'react';
+import React, { useEffect, useState, useRef, Suspense } from 'react';
 import { useLocation, Outlet } from 'react-router-dom';
 import Sidebar from '../../components/sidebar/Sidebar';
 import Header from '../../components/header/Header';
 import './DashboardLayout.css';
+import { triggerGetUserInfo } from '../../../features/auth/auth_slice';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../../state';
 
 const Dashboard = () => {
+  const dispatch: AppDispatch = useDispatch();
+  const { userInfo } = useSelector((state: RootState) => state.user);
 
   const mainRef = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
@@ -20,7 +25,9 @@ const Dashboard = () => {
     }
   }, [pathname]);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    dispatch(triggerGetUserInfo());
+  }, []);
 
   return (
     <>
@@ -57,7 +64,6 @@ const Dashboard = () => {
                 burgerClick={() => {
                   setSiderBarOpen(true);
                 }}
-                headTag={headTag}
               />
             </div>
             <div ref={mainRef} style={{ overflow: 'auto', height: '100vh' }} className={`main-content-wrapper card-bg-new ${shrink ? 'expand' : ''}`}>
