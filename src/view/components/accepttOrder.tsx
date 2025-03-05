@@ -8,7 +8,7 @@ interface AcceptOrderProps {
 }
 
 const AcceptOrder: React.FC<AcceptOrderProps> = ({ isOpen, onClose }) => {
-  const { details } = useSelector((state: RootState) => state.order);
+  const { details,action } = useSelector((state: RootState) => state.order);
 
   if (!isOpen) return null;
   return (
@@ -19,7 +19,7 @@ const AcceptOrder: React.FC<AcceptOrderProps> = ({ isOpen, onClose }) => {
         </span>
         <div className='pb-6 flex flex-col gap-0'>
           <p className='text-[11px] text-d_gray font-title leading-[0.5] !important font-semibold'>
-            {`You've Accepted this Order We'll let ${details.delivery_details.name} know that you've accepted the order request and you're on it!`}
+            {`You've ${action} this Order We'll let ${details.delivery_details.name} know that you've ${action} the order request and you're on it!`}
           </p>
         </div>
         <button onClick={onClose} className='bg-[#FD671E] text-white w-[343px] h-[44px]  rounded-md text-[15px]'>
