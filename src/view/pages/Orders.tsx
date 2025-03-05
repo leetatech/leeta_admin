@@ -13,6 +13,9 @@ import { formatDate } from '../../utilities/helpers';
 import { toast } from 'react-toastify';
 import { Spinner } from '../components/Spinner';
 import Pill from '../components/Pill';
+import { IoLocationOutline } from "react-icons/io5";
+
+
 
 interface RowData {
   id: number;
@@ -71,14 +74,7 @@ const Orders = () => {
 
   const handleOrderStatus = (text: string, reason?: string) => {
     dispatch(setAction(text));
-    if (text === 'ACCEPTED') {
-      let payload = {
-        order_id: details.id,
-        order_status: 'ACCEPTED',
-        reason: '',
-      };
-      dispatch(triggerOrderUpdate(payload));
-    } else if (text === 'REJECTED') {
+  if (text === 'REJECTED') {
       let payload = {
         order_id: details.id,
         order_status: 'REJECTED',
@@ -147,17 +143,17 @@ const Orders = () => {
       },
     };
     dispatch(triggerOrderList(payload));
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
-    if (action === 'ACCEPTED' && orderUpdate.data.success === 'success' && !orderUpdate.error) {
+    if ( orderUpdate.data.success === 'success' && !orderUpdate.error) {
       setIssModalOpen(true);
       dispatch(resetStatusUpdate());
       setIsModalOpen(false);
     } else if (orderUpdate.message && orderUpdate.error) {
       toast.error(`${orderUpdate.message}`);
     }
-  }, [orderUpdate]);
+  }, [dispatch, orderUpdate]);
 
   return (
     <div className='p-4'>
@@ -197,15 +193,13 @@ const Orders = () => {
               </button>
             </div>
           </div>
-          <div className='flex'>
+          <div className='flex pb-8'>
             {/* Truncated Table */}
             <div className={`transition-all duration-300 ${expandedRow ? 'w-[30%]' : 'w-full'}`}>
               <table className='w-full border-collapse'>
                 <thead className='bg-white'>
                   <tr>
-                    <th className='border-b border-[#EAECF0] p-2 text-left w-12'>
-                      <input type='checkbox' checked={selectedRows.length === data.length} onChange={(e) => handleHeaderCheckboxChange(e.target.checked)} />
-                    </th>
+                  
                     <th className='border-b border-[#EAECF0] p-2 text-left'>Customer</th>
                     {!expandedRow && (
                       <>
@@ -220,9 +214,7 @@ const Orders = () => {
                     return (
                       <React.Fragment key={row.order_number}>
                         <tr className={`${expandedRow === row.id ? 'bg-[#EAECF0]' : 'hover:bg-[#EAECF0] transition'}`}>
-                          <td className='border-b border-[#EAECF0] p-2'>
-                            <input type='checkbox' checked={selectedRows.includes(Number(row?.order_number))} onChange={(e) => handleRowCheckboxChange(Number(row.order_number), e.target.checked)} />
-                          </td>
+                       
                           <td className='border-b border-[#EAECF0] p-2'>
                             {row.delivery_details.name} {!expandedRow && `${formText()}`} for <span className='font-bold'>“Gas Cylinders”</span>
                           </td>
@@ -245,7 +237,7 @@ const Orders = () => {
             </div>
             {/* Detailed Content Div */}
             {expandedRow && (
-              <div className='w-[70%] h-[70vh] bg-gray-100 p-6 border border-[#EAECF0] transition-transform duration-300 ease-in-out' style={{ overflowY: 'auto' }}>
+              <div className='w-[70%] h-[70vh] bg-gray-100 p-6 border border-[#EAECF0] transition-transform duration-300 ease-in-out ' style={{ overflowY: 'auto' }}>
                 <div className='flex justify-between pr-4'>
                   <Typography variant={TypographyVariant.SUBTITLE} className='font-bold text-lg'>
                     Customer Details
@@ -268,8 +260,8 @@ const Orders = () => {
                   <Typography variant={TypographyVariant.BODY_SMALL_MEDIUM}>{details?.delivery_details?.email}</Typography>
                 </div>
                 <div className='flex gap-2 items-center mt-2 mb-8'>
-                  <img src={mail} alt='address' className='h-4 w-4' />
-                  <Typography variant={TypographyVariant.BODY_SMALL_MEDIUM}>{details?.delivery_details?.address?.full_address}</Typography>
+                 <IoLocationOutline color='#1D2939'/>
+                <Typography variant={TypographyVariant.BODY_SMALL_MEDIUM}>{details?.delivery_details?.address?.full_address}</Typography>
                 </div>
 
                 <p className='text-black text-[14px] font-bold'>Ordered Items</p>
@@ -313,26 +305,26 @@ const Orders = () => {
                       {action === 'REJECTED' && orderUpdate.loading ? <Spinner /> : <>Decline</>}
                     </button>
                     <button onClick={() => handleOrderStatus('ACCEPTED')} className='bg-[#3EAF3F] text-white px-14 py-2'>
-                      {action === 'ACCEPTED' && orderUpdate.loading ? <Spinner /> : <>Accept</>}
+                      {action !== 'REJECTED' && orderUpdate.loading ? <Spinner /> : <>Accept</>}
                     </button>
                   </div>
                 )}
                 {activeTab === 'ACCEPTED' && (
                   <div className='flex justify-center gap-40 mt-2 mb-2'>
                     <button onClick={() => handleOrderStatus('PROCESSED')} className='bg-[#3EAF3F] text-white px-14 py-2'>
-                      {action === 'ACCEPTED' && orderUpdate.loading ? <Spinner /> : <>PROCESSED</>}
+                      {action !== 'REJECTED' && orderUpdate.loading ? <Spinner /> : <>PROCESSED</>}
                     </button>
                   </div>
                 )}
                 {activeTab === 'PROCESSED' && (
                   <div className='flex justify-center gap-40 mt-2 mb-2'>
                     <button onClick={() => handleOrderStatus('SHIPPED')} className='bg-[#3EAF3F] text-white px-14 py-2'>
-                      {action === 'ACCEPTED' && orderUpdate.loading ? <Spinner /> : <>SHIPPED</>}
+                      {action !== 'REJECTED' && orderUpdate.loading ? <Spinner /> : <>SHIPPED</>}
                     </button>
                   </div>
                 )}
                 <DeclineRequest isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSubmit={handleOrderStatus} />
-                <AcceptOrder isOpen={action === 'ACCEPTED' && issModalOpen} onClose={handleGotIt} />
+                <AcceptOrder isOpen={issModalOpen} onClose={handleGotIt} />
               </div>
             )}
           </div>

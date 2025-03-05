@@ -38,15 +38,19 @@ const LoginForm = () => {
 
   useEffect(() => {
     if (!error && Object.keys(userData).length > 0) {
-      toast.success(`Login successfull`);
+      toast.success(`Login successful`);
       setTimeout(() => {
         navigate('app/dashboard');
+        dispatch(resetState()); // Reset after navigation
       }, 2000);
     } else if (error && message) {
-      toast.error(`${message}`);
+      toast.error(message);
+      setTimeout(() => {
+        dispatch(resetState()); 
+      }, 5000);
     }
-    dispatch(resetState());
-  }, [error, userData, message, loading, navigate, dispatch]);
+  }, [error, userData, message, navigate, dispatch]);
+  
 
   return (
     <div className='form-container bg-white shadow-md rounded-lg py-6 px-10 lg:py-16 lg:px-24'>
