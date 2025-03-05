@@ -13,6 +13,9 @@ import { formatDate } from '../../utilities/helpers';
 import { toast } from 'react-toastify';
 import { Spinner } from '../components/Spinner';
 import Pill from '../components/Pill';
+import { IoLocationOutline } from "react-icons/io5";
+
+
 
 interface RowData {
   id: number;
@@ -257,8 +260,8 @@ const Orders = () => {
                   <Typography variant={TypographyVariant.BODY_SMALL_MEDIUM}>{details?.delivery_details?.email}</Typography>
                 </div>
                 <div className='flex gap-2 items-center mt-2 mb-8'>
-                  <img src={mail} alt='address' className='h-4 w-4' />
-                  <Typography variant={TypographyVariant.BODY_SMALL_MEDIUM}>{details?.delivery_details?.address?.full_address}</Typography>
+                 <IoLocationOutline color='#1D2939'/>
+                <Typography variant={TypographyVariant.BODY_SMALL_MEDIUM}>{details?.delivery_details?.address?.full_address}</Typography>
                 </div>
 
                 <p className='text-black text-[14px] font-bold'>Ordered Items</p>
