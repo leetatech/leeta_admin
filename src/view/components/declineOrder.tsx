@@ -24,7 +24,6 @@ const DeclineOrder: React.FC<DeclineOrderProps> = ({ isOpen, onClose }) => {
     onClose();
     dispatch(resetStatusUpdate());
   };
-  console.log(action, isOpen);
   return (
     action === 'REJECTED' &&
     isOpen && (

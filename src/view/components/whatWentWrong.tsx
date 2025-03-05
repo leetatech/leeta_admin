@@ -28,7 +28,6 @@ const WhatWentWrong: React.FC<WhatWentWrongProps> = ({ onClose, onSubmit, closeD
 
   useEffect(() => {
     if (action === 'REJECTED' && orderUpdate.data.success === 'success' && !orderUpdate.error) {
-      console.log('setting got it true')
       setGotItModal(true);
       // dispatch(resetStatusUpdate());
     } else if (orderUpdate.message && orderUpdate.error) {
@@ -36,7 +35,6 @@ const WhatWentWrong: React.FC<WhatWentWrongProps> = ({ onClose, onSubmit, closeD
     }
   }, [orderUpdate]);
 
-  console.log(gotItModal)
 
   return (
     <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>

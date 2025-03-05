@@ -85,6 +85,13 @@ const Orders = () => {
         reason,
       };
       dispatch(triggerOrderUpdate(payload));
+    } else {
+      let payload = {
+        order_id: details.id,
+        order_status: text,
+        reason: ''
+      };
+      dispatch(triggerOrderUpdate(payload));
     }
   };
 
@@ -307,6 +314,20 @@ const Orders = () => {
                     </button>
                     <button onClick={() => handleOrderStatus('ACCEPTED')} className='bg-[#3EAF3F] text-white px-14 py-2'>
                       {action === 'ACCEPTED' && orderUpdate.loading ? <Spinner /> : <>Accept</>}
+                    </button>
+                  </div>
+                )}
+                {activeTab === 'ACCEPTED' && (
+                  <div className='flex justify-center gap-40 mt-2 mb-2'>
+                    <button onClick={() => handleOrderStatus('PROCESSED')} className='bg-[#3EAF3F] text-white px-14 py-2'>
+                      {action === 'ACCEPTED' && orderUpdate.loading ? <Spinner /> : <>PROCESSED</>}
+                    </button>
+                  </div>
+                )}
+                {activeTab === 'PROCESSED' && (
+                  <div className='flex justify-center gap-40 mt-2 mb-2'>
+                    <button onClick={() => handleOrderStatus('SHIPPED')} className='bg-[#3EAF3F] text-white px-14 py-2'>
+                      {action === 'ACCEPTED' && orderUpdate.loading ? <Spinner /> : <>SHIPPED</>}
                     </button>
                   </div>
                 )}

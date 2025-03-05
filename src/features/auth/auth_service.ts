@@ -1,4 +1,4 @@
-import { post } from '../../network/https';
+import { post, get } from '../../network/https';
 import apiRoutes from '../../route/api_route';
 
 export default class LoginService {
@@ -14,6 +14,19 @@ export default class LoginService {
     }
     if (response.data) {
       LoginService._saveToken(response.data.auth_token);
+      return response.data as Record<string, string>;
+    }
+  }
+
+  static async userInfo() {
+    // remove token from local storage
+    const response = await get({
+      url: apiRoutes.getUserInfo,
+    });
+    if (response.data.error_reference) {
+      throw new Error(response.data.message as string);
+    }
+    if (response.data) {
       return response.data as Record<string, string>;
     }
   }
