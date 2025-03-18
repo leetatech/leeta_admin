@@ -57,20 +57,20 @@ const Sidebar = ({ shrinked, setShrinked }: IProps) => {
   return (
     <div className={`sidebarComponent sidebar-bg  ${shrinked ? 'shrink' : ''}`}>
       <div className={`sidebarComponent__logo-div  ${shrinked ? 'shrink' : ''}`}>
-        <div className='logo-wrapper display-f align-center  '>
+        <Link to="/app/dashboard" className="logo-wrapper display-f align-center">
           {shrinked ? (
-            <div className='logo-img-con logo-con'>
-              <img src={logo} alt='symbol' />
-            </div>
+              <div className="logo-img-con logo-con">
+                <img src={logo} alt="symbol" />
+              </div>
           ) : (
-            <div className='logo-img-con full-logo-con'>
-              <img src={logo} alt='symbol' />
-              <Typography className='font-bold ml-3' variant={TypographyVariant.BODY_DEFAULT_MEDIUM}>
-                Leeta Vendor
-              </Typography>
-            </div>
+              <div className="logo-img-con full-logo-con">
+                <img src={logo} alt="symbol" />
+                <Typography className="font-bold ml-3" variant={TypographyVariant.BODY_DEFAULT_MEDIUM}>
+                  Leeta Vendor
+                </Typography>
+              </div>
           )}
-        </div>
+        </Link>
 
         <div
           className='sidebarComponent__shrink'
