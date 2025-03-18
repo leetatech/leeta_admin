@@ -14,7 +14,7 @@ const Button: React.FC<ButtonProps> = ({ text, icon, loading, active, disabled, 
   return (
     <button
     className={cn(
-      "flex justify-center items-center gap-2 px-1 py-1 rounded-md transition-all font-medium text-white border min-w-10",
+      "flex justify-center items-center gap-2 px-1 py-1 rounded-md transition-all font-medium  border-[#E3E3E3] min-w-10",
       active ? bgColor : "bg-gray-400 cursor-not-allowed",
       disabled && "opacity-50 cursor-not-allowed",
       className

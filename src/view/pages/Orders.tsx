@@ -485,7 +485,6 @@ const Orders = () => {
             )}
           </div>
         </>
-        
       )}
       <div className="flex justify-center items-center gap-4">
         {/* <Button text="Click Me" active  bgColor='white' className='text-[#343434] border'/> */}
@@ -502,10 +501,35 @@ const Orders = () => {
           bgColor="white"
           className="text-[#343434] border"
         />
-          <Button
-text="1"             active
-          className="text-white border"
+
+        <Button text="1" active className="text-white border" />
+        <Button
+          text="2"
+          active
+          className="text-[#343434] border"
+          bgColor="white"
         />
+
+        <Button
+          text="3"
+          active
+          className="text-[#343434] border"
+          bgColor="white"
+        />
+
+        <Button
+          text="..."
+          active
+          className="text-[#343434] border"
+          bgColor="white"
+        />
+        <Button
+          text="15"
+          active
+          className="text-[#343434] border"
+          bgColor="white"
+        />
+
         <Button
           icon={<MdOutlineKeyboardArrowRight color="#343434" size={30} />}
           active
@@ -518,13 +542,6 @@ text="1"             active
           bgColor="white"
           className="text-[#343434] border"
         />
-
-        {/* <Button
-          text="Icon & Text"
-          icon={<FaArrowRight className="w-5 h-5" />}
-          active
-        />
-        <Button text="Disabled" disabled /> */}
       </div>
     </div>
   );
