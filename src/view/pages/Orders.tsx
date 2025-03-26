@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, {useState, useEffect, useMemo} from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { MdDoubleArrow } from "react-icons/md"
 import type { AppDispatch, RootState } from "../../state"
@@ -29,6 +29,7 @@ interface RowData {
   details: string
 }
 
+// mock data
 const data: RowData[] = [
   { id: 1, customer: "John Doe", date: "2024-12-20", details: "Order #123" },
   { id: 2, customer: "Jane Smith", date: "2024-12-19", details: "Order #456" },
@@ -53,18 +54,7 @@ const Orders = () => {
   const [order, setOrder] = useState<Record<string, Record<string, string> | any>>({})
   const [details, setDetails] = useState<Record<string, Record<string, string> | any>>({})
   const [pageSize, setPageSize] = useState<number>(100)
-
-  const handleHeaderCheckboxChange = (checked: boolean) => {
-    if (checked) {
-      setSelectedRows(data.map((row) => row.id))
-    } else {
-      setSelectedRows([])
-    }
-  }
-
-  const handleRowCheckboxChange = (id: number, checked: boolean) => {
-    setSelectedRows((prev) => (checked ? [...prev, id] : prev.filter((rowId) => rowId !== id)))
-  }
+  const memoizedPageSize = useMemo(() => pageSize, [pageSize]);
 
   const handleDetailsClick = (id: number) => {
     setExpandedRow((prev) => (prev === id ? null : id))
@@ -145,11 +135,11 @@ const Orders = () => {
     const payload = {
       paging: {
         index: 0,
-        size: pageSize,
+        size: memoizedPageSize,
       },
-    }
-    dispatch(triggerOrderList(payload))
-  }, [dispatch, pageSize])
+    };
+    dispatch(triggerOrderList(payload));
+  }, [dispatch, memoizedPageSize]);
 
   useEffect(() => {
     if (orderUpdate.data.success === "success" && !orderUpdate.error) {
@@ -190,14 +180,14 @@ const Orders = () => {
           <div className="mt-4 mb-4">
             <div className="flex justify-end gap-2">
               <button className="flex items-center gap-2 px-2 py-1 border border-[#EAECF0] text-[12px] rounded">
-                <img src={arrows || "/placeholder.svg"} alt="Icon" className="w-4 h-4" />
+                <img src={arrows} alt="Icon" className="w-4 h-4" />
                 <span className="text-gray-800">Sort by</span>
               </button>
               <button className="flex items-center gap-2 px-2 py-1 border border-[#EAECF0] text-[12px] rounded">
-                <img src={filter || "/placeholder.svg"} alt="Icon" className="w-4 h-4" />
+                <img src={filter} alt="Icon" className="w-4 h-4" />
                 <span className="text-gray-800">Filter</span>
               </button>
-              <PaginationSizeDropdown pageSize={pageSize} onChange={(size) => setPageSize(size)} />
+              <PaginationSizeDropdown pageSize={memoizedPageSize} onChange={(size) => setPageSize(size)} />
             </div>
           </div>
           <div className="flex pb-8">
@@ -232,7 +222,7 @@ const Orders = () => {
                                   className="flex gap-4 items-center text-[#141388]"
                                   onClick={() => handleDetailsClick(Number(row.order_number))}
                                 >
-                                  View Order Details <img src={side || "/placeholder.svg"} alt="arrow" />
+                                  View Order Details <img src={side} alt="arrow" />
                                 </button>
                               </td>
                             </>
@@ -260,19 +250,19 @@ const Orders = () => {
                   </span>
                 </div>
                 <div className="flex gap-2 items-center mt-2">
-                  <img src={avatar || "/placeholder.svg"} alt="name" className="h-4 w-4" />
+                  <img src={avatar} alt="name" className="h-4 w-4" />
                   <Typography variant={TypographyVariant.BODY_SMALL_MEDIUM}>
                     {details?.delivery_details?.name}
                   </Typography>
                 </div>
                 <div className="flex gap-2 items-center mt-2">
-                  <img src={phone || "/placeholder.svg"} alt="phone" className="h-4 w-4" />
+                  <img src={phone} alt="phone" className="h-4 w-4" />
                   <Typography variant={TypographyVariant.BODY_SMALL_MEDIUM}>
                     {details?.delivery_details?.phone}
                   </Typography>
                 </div>
                 <div className="flex gap-2 items-center mt-2">
-                  <img src={mail || "/placeholder.svg"} alt="mail" className="h-4 w-4" />
+                  <img src={mail} alt="mail" className="h-4 w-4" />
                   <Typography variant={TypographyVariant.BODY_SMALL_MEDIUM}>
                     {details?.delivery_details?.email}
                   </Typography>
