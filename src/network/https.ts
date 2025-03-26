@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 
 interface IAjax {
   method: string;
@@ -17,19 +17,19 @@ interface IAjax {
   axiosProps: Record<string, string>;
 }
 
-const URL = "https://leetabackend-e6d948d15ae2.herokuapp.com/api";
-// const URL = process.env.REACT_APP_NODE_ENV === 'development' ? process.env.REACT_APP_URL_PROD : process.env.REACT_APP_URL;
+const URL = 'https://leetabackend-e6d948d15ae2.herokuapp.com/api';
+// const URL = 'https://staging-leet-346-admin--ngqwkg.herokuapp.com/api/';
 
 // Axios instance
 export const axiosInstance = axios.create({
   baseURL: URL,
-  headers: { "Content-Type": "application/json" },
+  headers: { 'Content-Type': 'application/json' },
 });
 
 // Request interceptor callbacks
 // Request Success
 const requestInterceptorSuccessCB = async (successfulReq: any) => {
-  if (successfulReq.method === "post" || successfulReq.method === "POST") {
+  if (successfulReq.method === 'post' || successfulReq.method === 'POST') {
     const dataWithCtoken = {
       ...successfulReq.data,
     };
@@ -38,12 +38,7 @@ const requestInterceptorSuccessCB = async (successfulReq: any) => {
     successfulReq.data = JSONData;
   }
 
-  const authToken =
-    localStorage.getItem("leeta_token") && localStorage.getItem("leeta_token") !== "null"
-      ? JSON.parse(localStorage.getItem("leeta_token") as string)
-      : null;
-
-  // Set the authorization header
+  const authToken = localStorage.getItem('leeta_token') ? JSON.parse(localStorage.getItem('leeta_token') as string) : null;
 
   if (authToken) {
     successfulReq.headers.Authorization = `Bearer ${authToken as string}`;
@@ -54,8 +49,7 @@ const requestInterceptorSuccessCB = async (successfulReq: any) => {
 
 // Request Error
 const requestInterceptorErrorCB = async (error: any) => {
-
-  if (error.config.method === "post" || error.config.method === "POST") {
+  if (error.config.method === 'post' || error.config.method === 'POST') {
     error.response = {
       ...error.response,
       data: JSON.parse(error.response.data),
@@ -70,10 +64,7 @@ const responseInterceptorSuccessCB = (successRes: any) => {
   // const store = getStore();
   // dispatchAction(loginUser());
 
-  if (
-    successRes.config.method === "post" ||
-    successRes.config.method === "POST"
-  ) {
+  if (successRes.config.method === 'post' || successRes.config.method === 'POST') {
     //
   }
   return successRes;
@@ -81,35 +72,23 @@ const responseInterceptorSuccessCB = (successRes: any) => {
 
 // Response Error
 const responseInterceptorErrorCB = async (error: any) => {
-//   const originalRequest = error.config;
-  //   if (
-  //     error.response?.status === 400 &&
-  //     error.response?.data.message === ''
-  //   ) {
-  //     window.location.replace('/');
-  //   }
+  //   const originalRequest = error.config;
+  if (error.response?.status === 401) {
+    window.location.replace('/');
+  }
   return await Promise.reject(error.response.data);
 };
 
 (() => {
   // Request interceptor
-  axiosInstance.interceptors.request.use(
-    requestInterceptorSuccessCB,
-    requestInterceptorErrorCB
-  );
+  axiosInstance.interceptors.request.use(requestInterceptorSuccessCB, requestInterceptorErrorCB);
 
   // Response interceptor
-  axiosInstance.interceptors.response.use(
-    responseInterceptorSuccessCB,
-    responseInterceptorErrorCB
-  );
+  axiosInstance.interceptors.response.use(responseInterceptorSuccessCB, responseInterceptorErrorCB);
 })();
 
 // Handle Response Data
-const handleHttpResponse = (
-  response: Record<string, any>,
-  success: (arg: Record<string, any>) => void
-) => {
+const handleHttpResponse = (response: Record<string, any>, success: (arg: Record<string, any>) => void) => {
   // No Data Was Returned
   if (!response.data) {
     return;
@@ -174,7 +153,7 @@ function handleHttpError({ response, error, formErrors }: HttpError) {
 
 // Send HTTP Request
 async function ajax({
-  method = "GET",
+  method = 'GET',
   url,
   data,
   baseURL,
@@ -191,14 +170,16 @@ async function ajax({
 }: IAjax) {
   // Request Response And Error
   interface Result {
-    data:{
-    error_reference?: string,
-    error_code?: number,
-    error_type?: string,
-    message?:string
-    } | Record<string, string> |any
-    error? :boolean 
-
+    data:
+      | {
+          error_reference?: string;
+          error_code?: number;
+          error_type?: string;
+          message?: string;
+        }
+      | Record<string, string>
+      | any;
+    error?: boolean;
   }
 
   let result: Result = {
@@ -235,7 +216,7 @@ async function ajax({
     .catch((err) => {
       // Assign Response Error
       result.error = true;
-      result.data = {...err.data};
+      result.data = { ...err.data };
       // Handle Errors
       if (handleError) {
         handleHttpError({
@@ -254,17 +235,13 @@ async function ajax({
 }
 
 // Send GET Requests
-export const get = async (payload: any) =>
-  await ajax({ ...payload, method: "GET" });
+export const get = async (payload: any) => await ajax({ ...payload, method: 'GET' });
 
 // Send POST Requests
-export const post = async (payload: any) =>
-  await ajax({ ...payload, method: "POST" });
+export const post = async (payload: any) => await ajax({ ...payload, method: 'POST' });
 
 // Send Delete Requests
-export const del = async (payload: any) =>
-  await ajax({ ...payload, method: "DELETE" });
+export const del = async (payload: any) => await ajax({ ...payload, method: 'DELETE' });
 
 // Send put Requests
-export const put = async (payload: any) =>
-  await ajax({ ...payload, method: "PUT" });
+export const put = async (payload: any) => await ajax({ ...payload, method: 'PUT' });
