@@ -5,17 +5,20 @@ import UPLOAD from '../../assets/uplooad.svg';
 import { TbLogout } from 'react-icons/tb';
 import Modal from '../components/Modal';
 import Logout from '../components/logout';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../state';
 
 const Settings = () => {
   const { userInfo, loading } = useSelector((state: RootState) => state.user);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const navigate = useNavigate();
 
   const name = `${userInfo?.first_name} ${userInfo.last_name}`;
 
   const handleLogout = () => {
-    window.location.href = '/';
+    localStorage.removeItem('leeta_token');
+    navigate('/');
     console.log('Logging out...');
   };
 
@@ -41,7 +44,7 @@ const Settings = () => {
           onClose={() => setShowLogoutModal(false)}
           onLogout={() => {
             handleLogout();
-            window.location.href = '/';
+            setShowLogoutModal(false);
           }}
         />
       </Modal>
