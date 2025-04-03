@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useMemo} from "react"
+import React, { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { MdDoubleArrow } from "react-icons/md"
 import type { AppDispatch, RootState } from "../../state"
@@ -22,24 +22,24 @@ import Pill from "../components/Pill"
 import { IoLocationOutline } from "react-icons/io5"
 import PaginationSizeDropdown from "../components/PaginationSizeDropdown"
 
-interface RowData {
-  id: number
-  customer: string
-  date: string
-  details: string
-}
+// unused mock data
+// interface RowData {
+//   id: number
+//   customer: string
+//   date: string
+//   details: string
+// }
 
-// mock data
-const data: RowData[] = [
-  { id: 1, customer: "John Doe", date: "2024-12-20", details: "Order #123" },
-  { id: 2, customer: "Jane Smith", date: "2024-12-19", details: "Order #456" },
-  { id: 3, customer: "Smith Johnson", date: "2024-12-18", details: "Order #789" },
-  { id: 4, customer: "John Doe", date: "2024-12-20", details: "Order #123" },
-  { id: 5, customer: "Doe Smith", date: "2024-12-19", details: "Order #456" },
-  { id: 6, customer: "Alice Johnson", date: "2024-12-18", details: "Order #789" },
-  { id: 7, customer: "Alice Joel", date: "2024-12-18", details: "Order #789" },
-  { id: 8, customer: "Jane Joel", date: "2024-12-18", details: "Order #789" },
-]
+// const data: RowData[] = [
+//   { id: 1, customer: "John Doe", date: "2024-12-20", details: "Order #123" },
+//   { id: 2, customer: "Jane Smith", date: "2024-12-19", details: "Order #456" },
+//   { id: 3, customer: "Smith Johnson", date: "2024-12-18", details: "Order #789" },
+//   { id: 4, customer: "John Doe", date: "2024-12-20", details: "Order #123" },
+//   { id: 5, customer: "Doe Smith", date: "2024-12-19", details: "Order #456" },
+//   { id: 6, customer: "Alice Johnson", date: "2024-12-18", details: "Order #789" },
+//   { id: 7, customer: "Alice Joel", date: "2024-12-18", details: "Order #789" },
+//   { id: 8, customer: "Jane Joel", date: "2024-12-18", details: "Order #789" },
+// ]
 
 const Orders = () => {
   const dispatch: AppDispatch = useDispatch()
@@ -49,19 +49,27 @@ const Orders = () => {
   const [selectedRows, setSelectedRows] = useState<number[]>([])
   const [expandedRow, setExpandedRow] = useState<number | null>(null)
   const { arrows, filter, phone, mail, avatar, side } = useIcons()
-  const [activeTab, setActiveTab] = useState("")
+  const [activeTab, setActiveTab] = useState("ALL")
   const [selectedTab, setSelectedTab] = useState<Record<string, Record<string, string> | any>>({})
   const [order, setOrder] = useState<Record<string, Record<string, string> | any>>({})
   const [details, setDetails] = useState<Record<string, Record<string, string> | any>>({})
   const [pageSize, setPageSize] = useState<number>(100)
-  const memoizedPageSize = useMemo(() => pageSize, [pageSize]);
+  const [allOrders, setAllOrders] = useState<any[]>([])
+  const [totalOrderCount, setTotalOrderCount] = useState(0)
 
   const handleDetailsClick = (id: number) => {
     setExpandedRow((prev) => (prev === id ? null : id))
     if (!selectedRows.includes(id)) {
       setSelectedRows((prev) => [...prev, id])
     }
-    const view = selectedTab[activeTab].data.find((row: { order_number: number }) => Number(row.order_number) === id)
+
+    let view
+    if (activeTab === "ALL") {
+      view = allOrders.find((row: { order_number: number }) => Number(row.order_number) === id)
+    } else {
+      view = selectedTab[activeTab].data.find((row: { order_number: number }) => Number(row.order_number) === id)
+    }
+
     setDetails(view)
     dispatch(setDetailsGenState(view))
   }
@@ -87,16 +95,17 @@ const Orders = () => {
     }
   }
 
-  const formText = (): string => {
-    return activeTab === "PENDING"
-      ? "placed a new order"
-      : activeTab === "CANCELLED"
-        ? "cancelled order"
-        : activeTab === "ACCEPTED"
-          ? "order was accepted"
-          : activeTab === "REJECTED"
-            ? "order was rejected"
-            : "order is completed"
+  const formText = (status?: string): string => {
+    const currentStatus = status || activeTab;
+
+    const statusMessages: Record<string, string> = {
+      PENDING: "placed a new order",
+      CANCELLED: "cancelled order",
+      ACCEPTED: "order was accepted",
+      REJECTED: "order was rejected",
+    };
+
+    return statusMessages[currentStatus] || "order is completed";
   }
 
   const handleGotIt = () => {
@@ -112,34 +121,59 @@ const Orders = () => {
   }
 
   useEffect(() => {
-    if (orderData.data.data?.length > 0) {
-      const structedData = [...orderData.data.data]
-        ?.sort((a: { status_ts: number }, b: { status_ts: number }) => b.status_ts - a.status_ts)
-        .reduce((accum: { [x: string]: { data: any; count: number } }, row: { status: string | number }) => {
-          if (accum[row.status]) {
-            accum[row.status].data.push(row)
-            accum[row.status].count += 1
-          } else {
-            accum[row.status] = { data: [row], count: 1 }
-          }
-          return accum
-        }, {})
-      setOrder(structedData)
-      const tab = Object.keys(structedData)
-      setSelectedTab({ [tab[0]]: structedData[tab[0]] })
-      setActiveTab(`${[tab[0]]}`)
+    const orders = orderData.data.data;
+
+    if (orders?.length > 0) {
+      const sortedOrders = [...orders].sort(
+          (a: { status_ts: number }, b: { status_ts: number }) => b.status_ts - a.status_ts
+      );
+
+      setAllOrders(sortedOrders);
+      setTotalOrderCount(sortedOrders.length);
+
+      // group orders by status
+      const groupedOrders = sortedOrders.reduce(
+          (acc: Record<string, { data: any[]; count: number }>, order: { status: string }) => {
+            if (!acc[order.status]) {
+              acc[order.status] = { data: [], count: 0 };
+            }
+            acc[order.status].data.push(order);
+            acc[order.status].count += 1;
+            return acc;
+          },
+          {}
+      );
+
+      setOrder(groupedOrders);
+
+      // Create tab data
+      const allTabData = {
+        ALL: { data: sortedOrders, count: sortedOrders.length },
+      };
+
+      if (activeTab === "ALL") {
+        setSelectedTab(allTabData);
+      } else {
+        const availableTabs = Object.keys(groupedOrders);
+        if (!activeTab && availableTabs.length > 0) {
+          setActiveTab(availableTabs[0]);
+          setSelectedTab({ [availableTabs[0]]: groupedOrders[availableTabs[0]] });
+        } else if (activeTab && groupedOrders[activeTab]) {
+          setSelectedTab({ [activeTab]: groupedOrders[activeTab] });
+        }
+      }
     }
-  }, [orderData.data])
+  }, [orderData.data, activeTab]);
 
   useEffect(() => {
     const payload = {
       paging: {
         index: 0,
-        size: memoizedPageSize,
+        size: pageSize,
       },
-    };
-    dispatch(triggerOrderList(payload));
-  }, [dispatch, memoizedPageSize]);
+    }
+    dispatch(triggerOrderList(payload))
+  }, [dispatch, pageSize])
 
   useEffect(() => {
     if (orderUpdate.data.success === "success" && !orderUpdate.error) {
@@ -162,6 +196,24 @@ const Orders = () => {
         <>
           <div className="border-b-[0.2px] border-[#EAECF0] mt-4">
             <div className="flex space-x-4">
+              <div
+                key="ALL"
+                onClick={() => {
+                  setActiveTab("ALL")
+                  setSelectedTab({
+                    ALL: {
+                      data: allOrders,
+                      count: totalOrderCount,
+                    },
+                  })
+                  handleCloseDetails()
+                }}
+                className={`cursor-pointer py-2 px-4 text-sm font-medium ${
+                  activeTab === "ALL" ? "border-b-2 border-[#141388] text-[#141388]" : "text-gray-500"
+                }`}
+              >
+                ALL ({totalOrderCount})
+              </div>
               {Object.keys(order).map((tab) => (
                 <div
                   key={tab}
@@ -170,7 +222,9 @@ const Orders = () => {
                     setSelectedTab({ [tab]: order[tab] })
                     handleCloseDetails()
                   }}
-                  className={`cursor-pointer py-2 px-4 text-sm font-medium ${activeTab === tab ? "border-b-2 border-[#141388] text-[#141388]" : "text-gray-500"}`}
+                  className={`cursor-pointer py-2 px-4 text-sm font-medium ${
+                    activeTab === tab ? "border-b-2 border-[#141388] text-[#141388]" : "text-gray-500"
+                  }`}
                 >
                   {tab} ({order[tab].count})
                 </div>
@@ -187,7 +241,7 @@ const Orders = () => {
                 <img src={filter} alt="Icon" className="w-4 h-4" />
                 <span className="text-gray-800">Filter</span>
               </button>
-              <PaginationSizeDropdown pageSize={memoizedPageSize} onChange={(size) => setPageSize(size)} />
+              <PaginationSizeDropdown pageSize={pageSize} onChange={(size) => setPageSize(size)} />
             </div>
           </div>
           <div className="flex pb-8">
@@ -200,6 +254,7 @@ const Orders = () => {
                     {!expandedRow && (
                       <>
                         <th className="border-b border-[#EAECF0] p-2 text-left">Date</th>
+                        <th className="border-b border-[#EAECF0] p-2 text-left">Status</th>
                         <th className="border-b border-[#EAECF0] p-2 text-left">Details</th>
                       </>
                     )}
@@ -211,12 +266,34 @@ const Orders = () => {
                       <React.Fragment key={row.order_number}>
                         <tr className={`${expandedRow === row.id ? "bg-[#EAECF0]" : "hover:bg-[#EAECF0] transition"}`}>
                           <td className="border-b border-[#EAECF0] p-2">
-                            {row.delivery_details.name} {!expandedRow && `${formText()}`} for{" "}
+                            {row.delivery_details.name}{" "}
+                            {!expandedRow && (activeTab === "ALL" ? formText(row.status) : formText())} for{" "}
                             <span className="font-bold">"Gas Cylinders"</span>
                           </td>
                           {!expandedRow && (
                             <>
                               <td className="border-b border-[#EAECF0] p-2 text-gray">{formatDate(row?.status_ts)}</td>
+                              <td className="border-b border-[#EAECF0] p-2">
+                                <span
+                                  className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                    row.status === "PENDING"
+                                      ? "bg-yellow-100 text-yellow-800"
+                                      : row.status === "ACCEPTED"
+                                        ? "bg-blue-100 text-blue-800"
+                                        : row.status === "PROCESSED"
+                                          ? "bg-purple-100 text-purple-800"
+                                          : row.status === "SHIPPED"
+                                            ? "bg-green-100 text-green-800"
+                                            : row.status === "CANCELLED"
+                                              ? "bg-red-100 text-red-800"
+                                              : row.status === "REJECTED"
+                                                ? "bg-gray-100 text-gray-800"
+                                                : "bg-gray-100 text-gray-800"
+                                  }`}
+                                >
+                                  {row.status}
+                                </span>
+                              </td>
                               <td className="border-b border-[#EAECF0] p-2">
                                 <button
                                   className="flex gap-4 items-center text-[#141388]"
@@ -245,7 +322,7 @@ const Orders = () => {
                     Customer Details
                   </Typography>
                   <span className="flex gap-2 items-center">
-                    <Pill text={activeTab} />
+                    <Pill text={details?.status || activeTab} />
                     <MdDoubleArrow className="cursor-pointer" onClick={handleCloseDetails} />
                   </span>
                 </div>
@@ -319,7 +396,7 @@ const Orders = () => {
                     </p>
                   </div>
                 </div>
-                {activeTab === "PENDING" && (
+                {(activeTab === "PENDING" || (activeTab === "ALL" && details?.status === "PENDING")) && (
                   <div className="flex justify-center gap-40 mt-2 mb-2">
                     <button
                       className="border border-[#EF0F30] bg-red-100 text-[#EF0F30] px-14 py-2"
@@ -335,7 +412,7 @@ const Orders = () => {
                     </button>
                   </div>
                 )}
-                {activeTab === "ACCEPTED" && (
+                {(activeTab === "ACCEPTED" || (activeTab === "ALL" && details?.status === "ACCEPTED")) && (
                   <div className="flex justify-center gap-40 mt-2 mb-2">
                     <button
                       onClick={() => handleOrderStatus("PROCESSED")}
@@ -345,7 +422,7 @@ const Orders = () => {
                     </button>
                   </div>
                 )}
-                {activeTab === "PROCESSED" && (
+                {(activeTab === "PROCESSED" || (activeTab === "ALL" && details?.status === "PROCESSED")) && (
                   <div className="flex justify-center gap-40 mt-2 mb-2">
                     <button onClick={() => handleOrderStatus("SHIPPED")} className="bg-[#3EAF3F] text-white px-14 py-2">
                       {action !== "REJECTED" && orderUpdate.loading ? <Spinner /> : <>SHIPPED</>}
