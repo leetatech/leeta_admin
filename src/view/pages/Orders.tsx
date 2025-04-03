@@ -1,5 +1,3 @@
-"use client"
-
 import React, { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { MdDoubleArrow } from "react-icons/md"
@@ -24,23 +22,24 @@ import Pill from "../components/Pill"
 import { IoLocationOutline } from "react-icons/io5"
 import PaginationSizeDropdown from "../components/PaginationSizeDropdown"
 
-interface RowData {
-  id: number
-  customer: string
-  date: string
-  details: string
-}
+// unused mock data
+// interface RowData {
+//   id: number
+//   customer: string
+//   date: string
+//   details: string
+// }
 
-const data: RowData[] = [
-  { id: 1, customer: "John Doe", date: "2024-12-20", details: "Order #123" },
-  { id: 2, customer: "Jane Smith", date: "2024-12-19", details: "Order #456" },
-  { id: 3, customer: "Smith Johnson", date: "2024-12-18", details: "Order #789" },
-  { id: 4, customer: "John Doe", date: "2024-12-20", details: "Order #123" },
-  { id: 5, customer: "Doe Smith", date: "2024-12-19", details: "Order #456" },
-  { id: 6, customer: "Alice Johnson", date: "2024-12-18", details: "Order #789" },
-  { id: 7, customer: "Alice Joel", date: "2024-12-18", details: "Order #789" },
-  { id: 8, customer: "Jane Joel", date: "2024-12-18", details: "Order #789" },
-]
+// const data: RowData[] = [
+//   { id: 1, customer: "John Doe", date: "2024-12-20", details: "Order #123" },
+//   { id: 2, customer: "Jane Smith", date: "2024-12-19", details: "Order #456" },
+//   { id: 3, customer: "Smith Johnson", date: "2024-12-18", details: "Order #789" },
+//   { id: 4, customer: "John Doe", date: "2024-12-20", details: "Order #123" },
+//   { id: 5, customer: "Doe Smith", date: "2024-12-19", details: "Order #456" },
+//   { id: 6, customer: "Alice Johnson", date: "2024-12-18", details: "Order #789" },
+//   { id: 7, customer: "Alice Joel", date: "2024-12-18", details: "Order #789" },
+//   { id: 8, customer: "Jane Joel", date: "2024-12-18", details: "Order #789" },
+// ]
 
 const Orders = () => {
   const dispatch: AppDispatch = useDispatch()
@@ -57,18 +56,6 @@ const Orders = () => {
   const [pageSize, setPageSize] = useState<number>(100)
   const [allOrders, setAllOrders] = useState<any[]>([])
   const [totalOrderCount, setTotalOrderCount] = useState(0)
-
-  const handleHeaderCheckboxChange = (checked: boolean) => {
-    if (checked) {
-      setSelectedRows(data.map((row) => row.id))
-    } else {
-      setSelectedRows([])
-    }
-  }
-
-  const handleRowCheckboxChange = (id: number, checked: boolean) => {
-    setSelectedRows((prev) => (checked ? [...prev, id] : prev.filter((rowId) => rowId !== id)))
-  }
 
   const handleDetailsClick = (id: number) => {
     setExpandedRow((prev) => (prev === id ? null : id))
@@ -109,16 +96,16 @@ const Orders = () => {
   }
 
   const formText = (status?: string): string => {
-    const statusToCheck = status || activeTab
-    return statusToCheck === "PENDING"
-      ? "placed a new order"
-      : statusToCheck === "CANCELLED"
-        ? "cancelled order"
-        : statusToCheck === "ACCEPTED"
-          ? "order was accepted"
-          : statusToCheck === "REJECTED"
-            ? "order was rejected"
-            : "order is completed"
+    const currentStatus = status || activeTab;
+
+    const statusMessages: Record<string, string> = {
+      PENDING: "placed a new order",
+      CANCELLED: "cancelled order",
+      ACCEPTED: "order was accepted",
+      REJECTED: "order was rejected",
+    };
+
+    return statusMessages[currentStatus] || "order is completed";
   }
 
   const handleGotIt = () => {
@@ -134,47 +121,49 @@ const Orders = () => {
   }
 
   useEffect(() => {
-    if (orderData.data.data?.length > 0) {
-      const allOrdersData = [...orderData.data.data]
-      setAllOrders(allOrdersData)
-      setTotalOrderCount(allOrdersData.length)
+    const orders = orderData.data.data;
 
-      const structedData = allOrdersData
-        ?.sort((a: { status_ts: number }, b: { status_ts: number }) => b.status_ts - a.status_ts)
-        .reduce((accum: { [x: string]: { data: any; count: number } }, row: { status: string | number }) => {
-          if (accum[row.status]) {
-            accum[row.status].data.push(row)
-            accum[row.status].count += 1
-          } else {
-            accum[row.status] = { data: [row], count: 1 }
-          }
-          return accum
-        }, {})
+    if (orders?.length > 0) {
+      const sortedOrders = [...orders].sort(
+          (a: { status_ts: number }, b: { status_ts: number }) => b.status_ts - a.status_ts
+      );
 
-      setOrder(structedData)
+      setAllOrders(sortedOrders);
+      setTotalOrderCount(sortedOrders.length);
 
-      // Create an "ALL" tab data structure
+      // group orders by status
+      const groupedOrders = sortedOrders.reduce(
+          (acc: Record<string, { data: any[]; count: number }>, order: { status: string }) => {
+            if (!acc[order.status]) {
+              acc[order.status] = { data: [], count: 0 };
+            }
+            acc[order.status].data.push(order);
+            acc[order.status].count += 1;
+            return acc;
+          },
+          {}
+      );
+
+      setOrder(groupedOrders);
+
+      // Create tab data
       const allTabData = {
-        ALL: {
-          data: allOrdersData,
-          count: allOrdersData.length,
-        },
-      }
+        ALL: { data: sortedOrders, count: sortedOrders.length },
+      };
 
-      // Set the selected tab based on the active tab
       if (activeTab === "ALL") {
-        setSelectedTab(allTabData)
+        setSelectedTab(allTabData);
       } else {
-        const tab = Object.keys(structedData)
-        if (tab.length > 0 && !activeTab) {
-          setActiveTab(tab[0])
-          setSelectedTab({ [tab[0]]: structedData[tab[0]] })
-        } else if (activeTab && structedData[activeTab]) {
-          setSelectedTab({ [activeTab]: structedData[activeTab] })
+        const availableTabs = Object.keys(groupedOrders);
+        if (!activeTab && availableTabs.length > 0) {
+          setActiveTab(availableTabs[0]);
+          setSelectedTab({ [availableTabs[0]]: groupedOrders[availableTabs[0]] });
+        } else if (activeTab && groupedOrders[activeTab]) {
+          setSelectedTab({ [activeTab]: groupedOrders[activeTab] });
         }
       }
     }
-  }, [orderData.data, activeTab])
+  }, [orderData.data, activeTab]);
 
   useEffect(() => {
     const payload = {
@@ -245,11 +234,11 @@ const Orders = () => {
           <div className="mt-4 mb-4">
             <div className="flex justify-end gap-2">
               <button className="flex items-center gap-2 px-2 py-1 border border-[#EAECF0] text-[12px] rounded">
-                <img src={arrows || "/placeholder.svg"} alt="Icon" className="w-4 h-4" />
+                <img src={arrows} alt="Icon" className="w-4 h-4" />
                 <span className="text-gray-800">Sort by</span>
               </button>
               <button className="flex items-center gap-2 px-2 py-1 border border-[#EAECF0] text-[12px] rounded">
-                <img src={filter || "/placeholder.svg"} alt="Icon" className="w-4 h-4" />
+                <img src={filter} alt="Icon" className="w-4 h-4" />
                 <span className="text-gray-800">Filter</span>
               </button>
               <PaginationSizeDropdown pageSize={pageSize} onChange={(size) => setPageSize(size)} />
@@ -310,7 +299,7 @@ const Orders = () => {
                                   className="flex gap-4 items-center text-[#141388]"
                                   onClick={() => handleDetailsClick(Number(row.order_number))}
                                 >
-                                  View Order Details <img src={side || "/placeholder.svg"} alt="arrow" />
+                                  View Order Details <img src={side} alt="arrow" />
                                 </button>
                               </td>
                             </>
@@ -338,19 +327,19 @@ const Orders = () => {
                   </span>
                 </div>
                 <div className="flex gap-2 items-center mt-2">
-                  <img src={avatar || "/placeholder.svg"} alt="name" className="h-4 w-4" />
+                  <img src={avatar} alt="name" className="h-4 w-4" />
                   <Typography variant={TypographyVariant.BODY_SMALL_MEDIUM}>
                     {details?.delivery_details?.name}
                   </Typography>
                 </div>
                 <div className="flex gap-2 items-center mt-2">
-                  <img src={phone || "/placeholder.svg"} alt="phone" className="h-4 w-4" />
+                  <img src={phone} alt="phone" className="h-4 w-4" />
                   <Typography variant={TypographyVariant.BODY_SMALL_MEDIUM}>
                     {details?.delivery_details?.phone}
                   </Typography>
                 </div>
                 <div className="flex gap-2 items-center mt-2">
-                  <img src={mail || "/placeholder.svg"} alt="mail" className="h-4 w-4" />
+                  <img src={mail} alt="mail" className="h-4 w-4" />
                   <Typography variant={TypographyVariant.BODY_SMALL_MEDIUM}>
                     {details?.delivery_details?.email}
                   </Typography>
