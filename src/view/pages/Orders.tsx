@@ -1,459 +1,216 @@
-"use client"
+import React, { useState } from "react";
+import Typography from "../components/Typography/Typography";
+import { TypographyVariant } from "../components/types";
+import { FaShoppingCart } from "react-icons/fa";
+import { IoMdBriefcase } from "react-icons/io";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { FaCirclePlus } from "react-icons/fa6";
 
-import React, { useState, useEffect } from "react"
-import { useDispatch, useSelector } from "react-redux"
-import { MdDoubleArrow } from "react-icons/md"
-import type { AppDispatch, RootState } from "../../state"
-import Typography from "../components/Typography/Typography"
-import { TypographyVariant } from "../components/types"
-import { useIcons } from "../../hooks/useIcons"
-import AcceptOrder from "../components/accepttOrder"
-import DeclineRequest from "../components/declineRequest"
-import {
-  resetStatusUpdate,
-  setAction,
-  setDetailsGenState,
-  triggerOrderList,
-  triggerOrderUpdate,
-} from "../../features/orders/order_slice"
-import Loader from "../components/Loader"
-import { formatDate } from "../../utilities/helpers"
-import { toast } from "react-toastify"
-import { Spinner } from "../components/Spinner"
-import Pill from "../components/Pill"
-import { IoLocationOutline } from "react-icons/io5"
-import PaginationSizeDropdown from "../components/PaginationSizeDropdown"
+const statusOptions = ["Pending", "Cancelled", "Completed"];
 
-interface RowData {
-  id: number
-  customer: string
-  date: string
-  details: string
-}
+const orders = Array.from({ length: 75 }, (_, i) => ({
+  id: i + 1,
+  date: "Dec 6, 2024",
+  customer: "Santana Lukas",
+  product: "Gas Cylinders",
+  time: "12pm",
+  status: statusOptions[i % 3],
+}));
 
-const data: RowData[] = [
-  { id: 1, customer: "John Doe", date: "2024-12-20", details: "Order #123" },
-  { id: 2, customer: "Jane Smith", date: "2024-12-19", details: "Order #456" },
-  { id: 3, customer: "Smith Johnson", date: "2024-12-18", details: "Order #789" },
-  { id: 4, customer: "John Doe", date: "2024-12-20", details: "Order #123" },
-  { id: 5, customer: "Doe Smith", date: "2024-12-19", details: "Order #456" },
-  { id: 6, customer: "Alice Johnson", date: "2024-12-18", details: "Order #789" },
-  { id: 7, customer: "Alice Joel", date: "2024-12-18", details: "Order #789" },
-  { id: 8, customer: "Jane Joel", date: "2024-12-18", details: "Order #789" },
-]
+const ITEMS_PER_PAGE = 12;
 
-const Orders = () => {
-  const dispatch: AppDispatch = useDispatch()
-  const { orderData, orderUpdate, action } = useSelector((state: RootState) => state.order)
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [issModalOpen, setIssModalOpen] = useState(false)
-  const [selectedRows, setSelectedRows] = useState<number[]>([])
-  const [expandedRow, setExpandedRow] = useState<number | null>(null)
-  const { arrows, filter, phone, mail, avatar, side } = useIcons()
-  const [activeTab, setActiveTab] = useState("ALL")
-  const [selectedTab, setSelectedTab] = useState<Record<string, Record<string, string> | any>>({})
-  const [order, setOrder] = useState<Record<string, Record<string, string> | any>>({})
-  const [details, setDetails] = useState<Record<string, Record<string, string> | any>>({})
-  const [pageSize, setPageSize] = useState<number>(100)
-  const [allOrders, setAllOrders] = useState<any[]>([])
-  const [totalOrderCount, setTotalOrderCount] = useState(0)
+export default function OrderDashboard() {
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [selectedOrders, setSelectedOrders] = useState<number[]>([]);
+  const [filterActive, setFilterActive] = useState<boolean>(false);
 
-  const handleHeaderCheckboxChange = (checked: boolean) => {
-    if (checked) {
-      setSelectedRows(data.map((row) => row.id))
+  const filteredOrders = filterActive
+    ? orders.filter((order) => selectedOrders.includes(order.id))
+    : orders;
+
+  const totalPages = Math.ceil(filteredOrders.length / ITEMS_PER_PAGE);
+
+  const currentOrders = filteredOrders.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
+  const toggleOrder = (id: number) => {
+    setSelectedOrders((prev) =>
+      prev.includes(id) ? prev.filter((o) => o !== id) : [...prev, id]
+    );
+  };
+
+  const allSelected = currentOrders.every((order) =>
+    selectedOrders.includes(order.id)
+  );
+
+  const toggleSelectAll = () => {
+    if (allSelected) {
+      setSelectedOrders((prev) =>
+        prev.filter((id) => !currentOrders.some((o) => o.id === id))
+      );
     } else {
-      setSelectedRows([])
+      const newSelections = currentOrders
+        .filter((order) => !selectedOrders.includes(order.id))
+        .map((order) => order.id);
+      setSelectedOrders((prev) => [...prev, ...newSelections]);
     }
-  }
-
-  const handleRowCheckboxChange = (id: number, checked: boolean) => {
-    setSelectedRows((prev) => (checked ? [...prev, id] : prev.filter((rowId) => rowId !== id)))
-  }
-
-  const handleDetailsClick = (id: number) => {
-    setExpandedRow((prev) => (prev === id ? null : id))
-    if (!selectedRows.includes(id)) {
-      setSelectedRows((prev) => [...prev, id])
-    }
-
-    let view
-    if (activeTab === "ALL") {
-      view = allOrders.find((row: { order_number: number }) => Number(row.order_number) === id)
-    } else {
-      view = selectedTab[activeTab].data.find((row: { order_number: number }) => Number(row.order_number) === id)
-    }
-
-    setDetails(view)
-    dispatch(setDetailsGenState(view))
-  }
-
-  const handleCloseDetails = () => setExpandedRow(null)
-
-  const handleOrderStatus = (text: string, reason?: string) => {
-    dispatch(setAction(text))
-    if (text === "REJECTED") {
-      const payload = {
-        order_id: details.id,
-        order_status: "REJECTED",
-        reason,
-      }
-      dispatch(triggerOrderUpdate(payload))
-    } else {
-      const payload = {
-        order_id: details.id,
-        order_status: text,
-        reason: "",
-      }
-      dispatch(triggerOrderUpdate(payload))
-    }
-  }
-
-  const formText = (status?: string): string => {
-    const statusToCheck = status || activeTab
-    return statusToCheck === "PENDING"
-      ? "placed a new order"
-      : statusToCheck === "CANCELLED"
-        ? "cancelled order"
-        : statusToCheck === "ACCEPTED"
-          ? "order was accepted"
-          : statusToCheck === "REJECTED"
-            ? "order was rejected"
-            : "order is completed"
-  }
-
-  const handleGotIt = () => {
-    const payload = {
-      paging: {
-        index: 0,
-        size: pageSize,
-      },
-    }
-    dispatch(triggerOrderList(payload))
-    handleCloseDetails()
-    setIssModalOpen(false)
-  }
-
-  useEffect(() => {
-    if (orderData.data.data?.length > 0) {
-      const allOrdersData = [...orderData.data.data]
-      setAllOrders(allOrdersData)
-      setTotalOrderCount(allOrdersData.length)
-
-      const structedData = allOrdersData
-        ?.sort((a: { status_ts: number }, b: { status_ts: number }) => b.status_ts - a.status_ts)
-        .reduce((accum: { [x: string]: { data: any; count: number } }, row: { status: string | number }) => {
-          if (accum[row.status]) {
-            accum[row.status].data.push(row)
-            accum[row.status].count += 1
-          } else {
-            accum[row.status] = { data: [row], count: 1 }
-          }
-          return accum
-        }, {})
-
-      setOrder(structedData)
-
-      // Create an "ALL" tab data structure
-      const allTabData = {
-        ALL: {
-          data: allOrdersData,
-          count: allOrdersData.length,
-        },
-      }
-
-      // Set the selected tab based on the active tab
-      if (activeTab === "ALL") {
-        setSelectedTab(allTabData)
-      } else {
-        const tab = Object.keys(structedData)
-        if (tab.length > 0 && !activeTab) {
-          setActiveTab(tab[0])
-          setSelectedTab({ [tab[0]]: structedData[tab[0]] })
-        } else if (activeTab && structedData[activeTab]) {
-          setSelectedTab({ [activeTab]: structedData[activeTab] })
-        }
-      }
-    }
-  }, [orderData.data, activeTab])
-
-  useEffect(() => {
-    const payload = {
-      paging: {
-        index: 0,
-        size: pageSize,
-      },
-    }
-    dispatch(triggerOrderList(payload))
-  }, [dispatch, pageSize])
-
-  useEffect(() => {
-    if (orderUpdate.data.success === "success" && !orderUpdate.error) {
-      setIssModalOpen(true)
-      dispatch(resetStatusUpdate())
-      setIsModalOpen(false)
-    } else if (orderUpdate.message && orderUpdate.error) {
-      toast.error(`${orderUpdate.message}`)
-    }
-  }, [dispatch, orderUpdate])
+  };
 
   return (
-    <div className="p-4">
-      <Typography variant={TypographyVariant.TITLE}>Order Details</Typography>
-      {orderData.loading ? (
-        <div className="w-full h-[70vh] flex items-center justify-center">
-          <Loader width="80px" height="80px" />
+    <div className="p-6 space-y-6">
+      <Typography className="text-3xl font-bold" variant={TypographyVariant.TITLE}>
+        Orders
+      </Typography>
+
+      <div className="grid grid-cols-3 gap-[102px]">
+        <div className="rounded border-[#E0E2E6] shadow-md p-4 w-60 bg-white">
+          <div className="flex gap-1 items-center pb-1">
+            <FaShoppingCart />
+            <Typography className="text-gray-500" variant={TypographyVariant.SMALL}>
+              Today's Orders
+            </Typography>
+          </div>
+          <Typography className="text-2xl font-semibold" variant={TypographyVariant.SUBTITLE}>
+            15,359
+          </Typography>
         </div>
-      ) : (
-        <>
-          <div className="border-b-[0.2px] border-[#EAECF0] mt-4">
-            <div className="flex space-x-4">
-              <div
-                key="ALL"
-                onClick={() => {
-                  setActiveTab("ALL")
-                  setSelectedTab({
-                    ALL: {
-                      data: allOrders,
-                      count: totalOrderCount,
-                    },
-                  })
-                  handleCloseDetails()
-                }}
-                className={`cursor-pointer py-2 px-4 text-sm font-medium ${
-                  activeTab === "ALL" ? "border-b-2 border-[#141388] text-[#141388]" : "text-gray-500"
-                }`}
-              >
-                ALL ({totalOrderCount})
-              </div>
-              {Object.keys(order).map((tab) => (
-                <div
-                  key={tab}
-                  onClick={() => {
-                    setActiveTab(tab)
-                    setSelectedTab({ [tab]: order[tab] })
-                    handleCloseDetails()
-                  }}
-                  className={`cursor-pointer py-2 px-4 text-sm font-medium ${
-                    activeTab === tab ? "border-b-2 border-[#141388] text-[#141388]" : "text-gray-500"
+        <div className="rounded border-[#E0E2E6] shadow-md p-4 w-60 bg-white">
+          <div className="flex gap-1 items-center pb-1">
+            <IoMdBriefcase />
+            <Typography className="text-gray-500" variant={TypographyVariant.SMALL}>
+              Pending Orders
+            </Typography>
+          </div>
+          <Typography className="text-2xl font-semibold" variant={TypographyVariant.SUBTITLE}>
+            13,421
+          </Typography>
+        </div>
+        <div className="rounded border-[#E0E2E6] shadow-md p-4 w-60 bg-white">
+          <div className="flex gap-1 items-center pb-1">
+            <IoMdBriefcase />
+            <Typography className="text-gray-500" variant={TypographyVariant.SMALL}>
+              Cancelled Order
+            </Typography>
+          </div>
+          <Typography className="text-2xl font-semibold" variant={TypographyVariant.SUBTITLE}>
+            1,192
+          </Typography>
+        </div>
+      </div>
+
+      <div className="flex justify-between items-center">
+        <div>
+          <div
+            className={`border-[#C0D5DE] w-56 bg-white flex items-center justify-center gap-2 border border-dashed px-4 py-2 rounded ${
+              filterActive ? "bg-blue-500 text-white" : ""
+            }`}
+            onClick={() => setFilterActive((prev) => !prev)}
+          >
+            <FaCirclePlus />
+            Filter
+            <span className="bg-[#E0E2E6] w-[0.7px] h-6"></span>
+            <button className="flex items-center w-26 px-3 h-5 text-[12px] text-[#3A3E44] font-title rounded-full bg-[#D4D8DD]">
+              {selectedOrders.length} selected x
+            </button>
+          </div>
+        </div>
+        <div>
+          <select className="border-[#C0D5DE] border rounded p-2 px-4 text-[14px]">
+            <option>All categories</option>
+          </select>
+        </div>
+      </div>
+
+      <table className="w-full bg-white border-[#E0E2E6] mt-4">
+        <thead className="bg-white">
+          <tr>
+            <th className="p-3 font-title text-left">
+              <input type="checkbox" checked={allSelected} onChange={toggleSelectAll} />
+            </th>
+            <th className="p-3 font-title text-left">Date</th>
+            <th className="p-3 font-title text-left">Customer</th>
+            <th className="p-3 font-title text-left">Status</th>
+            <th className="p-3 font-title text-left">Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          {currentOrders.map((order) => (
+            <tr key={order.id} className="border-0 border-b border-[#E0E2E6]">
+              <td className="p-3">
+                <input
+                  type="checkbox"
+                  checked={selectedOrders.includes(order.id)}
+                  onChange={() => toggleOrder(order.id)}
+                />
+              </td>
+              <td className="p-3 text-[14px]">{order.date}</td>
+              <td className="p-3">
+                <span className="font-medium text-[14px] font-title">{order.customer}</span>{" "}
+                placed a new order for{" "}
+                <strong className="text-[14px]">"{order.product}"</strong>
+              </td>
+              <td className="p-3 font-title text-[12px]">
+                <span
+                  className={`px-3 py-1 rounded-full text-white text-xs font-medium ${
+                    order.status === "Pending"
+                      ? "bg-yellow-500"
+                      : order.status === "Cancelled"
+                      ? "bg-red-500"
+                      : "bg-green-500"
                   }`}
                 >
-                  {tab} ({order[tab].count})
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="mt-4 mb-4">
-            <div className="flex justify-end gap-2">
-              <button className="flex items-center gap-2 px-2 py-1 border border-[#EAECF0] text-[12px] rounded">
-                <img src={arrows || "/placeholder.svg"} alt="Icon" className="w-4 h-4" />
-                <span className="text-gray-800">Sort by</span>
-              </button>
-              <button className="flex items-center gap-2 px-2 py-1 border border-[#EAECF0] text-[12px] rounded">
-                <img src={filter || "/placeholder.svg"} alt="Icon" className="w-4 h-4" />
-                <span className="text-gray-800">Filter</span>
-              </button>
-              <PaginationSizeDropdown pageSize={pageSize} onChange={(size) => setPageSize(size)} />
-            </div>
-          </div>
-          <div className="flex pb-8">
-            {/* Truncated Table */}
-            <div className={`transition-all duration-300 ${expandedRow ? "w-[30%]" : "w-full"}`}>
-              <table className="w-full border-collapse">
-                <thead className="bg-white">
-                  <tr>
-                    <th className="border-b border-[#EAECF0] p-2 text-left">Customer</th>
-                    {!expandedRow && (
-                      <>
-                        <th className="border-b border-[#EAECF0] p-2 text-left">Date</th>
-                        <th className="border-b border-[#EAECF0] p-2 text-left">Status</th>
-                        <th className="border-b border-[#EAECF0] p-2 text-left">Details</th>
-                      </>
-                    )}
-                  </tr>
-                </thead>
-                <tbody>
-                  {selectedTab[activeTab]?.data?.map((row: Record<string, string | number | any>) => {
-                    return (
-                      <React.Fragment key={row.order_number}>
-                        <tr className={`${expandedRow === row.id ? "bg-[#EAECF0]" : "hover:bg-[#EAECF0] transition"}`}>
-                          <td className="border-b border-[#EAECF0] p-2">
-                            {row.delivery_details.name}{" "}
-                            {!expandedRow && (activeTab === "ALL" ? formText(row.status) : formText())} for{" "}
-                            <span className="font-bold">"Gas Cylinders"</span>
-                          </td>
-                          {!expandedRow && (
-                            <>
-                              <td className="border-b border-[#EAECF0] p-2 text-gray">{formatDate(row?.status_ts)}</td>
-                              <td className="border-b border-[#EAECF0] p-2">
-                                <span
-                                  className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                    row.status === "PENDING"
-                                      ? "bg-yellow-100 text-yellow-800"
-                                      : row.status === "ACCEPTED"
-                                        ? "bg-blue-100 text-blue-800"
-                                        : row.status === "PROCESSED"
-                                          ? "bg-purple-100 text-purple-800"
-                                          : row.status === "SHIPPED"
-                                            ? "bg-green-100 text-green-800"
-                                            : row.status === "CANCELLED"
-                                              ? "bg-red-100 text-red-800"
-                                              : row.status === "REJECTED"
-                                                ? "bg-gray-100 text-gray-800"
-                                                : "bg-gray-100 text-gray-800"
-                                  }`}
-                                >
-                                  {row.status}
-                                </span>
-                              </td>
-                              <td className="border-b border-[#EAECF0] p-2">
-                                <button
-                                  className="flex gap-4 items-center text-[#141388]"
-                                  onClick={() => handleDetailsClick(Number(row.order_number))}
-                                >
-                                  View Order Details <img src={side || "/placeholder.svg"} alt="arrow" />
-                                </button>
-                              </td>
-                            </>
-                          )}
-                        </tr>
-                      </React.Fragment>
-                    )
-                  })}
-                </tbody>
-              </table>
-            </div>
-            {/* Detailed Content Div */}
-            {expandedRow && (
-              <div
-                className="w-[70%] h-[70vh] bg-gray-100 p-6 border border-[#EAECF0] transition-transform duration-300 ease-in-out "
-                style={{ overflowY: "auto" }}
-              >
-                <div className="flex justify-between pr-4">
-                  <Typography variant={TypographyVariant.SUBTITLE} className="font-bold text-lg">
-                    Customer Details
-                  </Typography>
-                  <span className="flex gap-2 items-center">
-                    <Pill text={details?.status || activeTab} />
-                    <MdDoubleArrow className="cursor-pointer" onClick={handleCloseDetails} />
-                  </span>
-                </div>
-                <div className="flex gap-2 items-center mt-2">
-                  <img src={avatar || "/placeholder.svg"} alt="name" className="h-4 w-4" />
-                  <Typography variant={TypographyVariant.BODY_SMALL_MEDIUM}>
-                    {details?.delivery_details?.name}
-                  </Typography>
-                </div>
-                <div className="flex gap-2 items-center mt-2">
-                  <img src={phone || "/placeholder.svg"} alt="phone" className="h-4 w-4" />
-                  <Typography variant={TypographyVariant.BODY_SMALL_MEDIUM}>
-                    {details?.delivery_details?.phone}
-                  </Typography>
-                </div>
-                <div className="flex gap-2 items-center mt-2">
-                  <img src={mail || "/placeholder.svg"} alt="mail" className="h-4 w-4" />
-                  <Typography variant={TypographyVariant.BODY_SMALL_MEDIUM}>
-                    {details?.delivery_details?.email}
-                  </Typography>
-                </div>
-                <div className="flex gap-2 items-center mt-2 mb-8">
-                  <IoLocationOutline color="#1D2939" />
-                  <Typography variant={TypographyVariant.BODY_SMALL_MEDIUM}>
-                    {details?.delivery_details?.address?.full_address}
-                  </Typography>
-                </div>
+                  {order.status}
+                </span>
+              </td>
+              <td className="p-3 font-title text-[12px] text-blue-500 cursor-pointer">
+                View Order Details
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
-                <p className="text-black text-[14px] font-bold">Ordered Items</p>
-                <div className="p-2">
-                  {details?.orders?.map((order: any, index: number) => {
-                    return (
-                      <React.Fragment key={index}>
-                        <div className="flex p-1 justify-between border-b border-[#EAECF0]">
-                          <Typography variant={TypographyVariant.BODY_SMALL_MEDIUM}>
-                            {order.weight}KG {order.product_category}
-                          </Typography>
-                          <Typography variant={TypographyVariant.BODY_SMALL_MEDIUM}>{order.cost}</Typography>
-                        </div>
-                        <div className="flex p-1 justify-between border-b border-[#EAECF0] mb-4">
-                          <Typography variant={TypographyVariant.BODY_SMALL_MEDIUM}>Gas Quantity</Typography>
-                          <Typography variant={TypographyVariant.BODY_SMALL_MEDIUM}>{order.quantity}</Typography>
-                        </div>
-                      </React.Fragment>
-                    )
-                  })}
-                  <div className="flex p-1 justify-between">
-                    <Typography variant={TypographyVariant.BODY_SMALL_MEDIUM}>Subtotal</Typography>
-                    <Typography variant={TypographyVariant.BODY_SMALL_MEDIUM}>
-                      {Number(
-                        details?.orders?.reduce((accum: any, item: any) => accum + item.cost, 0),
-                      ).toLocaleString()}
-                    </Typography>
-                  </div>
-                  <div className="flex p-1 justify-between">
-                    <Typography variant={TypographyVariant.BODY_SMALL_MEDIUM}>Delivery Fee</Typography>
-                    <Typography variant={TypographyVariant.BODY_SMALL_MEDIUM}>
-                      {Number(details?.delivery_fee).toLocaleString()}
-                    </Typography>
-                  </div>
-                  <div className="flex p-1 justify-between">
-                    <Typography variant={TypographyVariant.BODY_SMALL_MEDIUM}>Service Fee</Typography>
-                    <Typography variant={TypographyVariant.BODY_SMALL_MEDIUM}>
-                      {Number(details?.service_fee).toLocaleString()}
-                    </Typography>
-                  </div>
-                  <div className="flex p-1 justify-between">
-                    <p className="font-bold text-14px">Total</p>
-                    <p className="text-[#3EAF3F] leading-[26px] font-medium">
-                      {Number(details?.total).toLocaleString()}
-                    </p>
-                  </div>
-                </div>
-                {(activeTab === "PENDING" || (activeTab === "ALL" && details?.status === "PENDING")) && (
-                  <div className="flex justify-center gap-40 mt-2 mb-2">
-                    <button
-                      className="border border-[#EF0F30] bg-red-100 text-[#EF0F30] px-14 py-2"
-                      onClick={() => setIsModalOpen(true)}
-                    >
-                      {action === "REJECTED" && orderUpdate.loading ? <Spinner /> : <>Decline</>}
-                    </button>
-                    <button
-                      onClick={() => handleOrderStatus("ACCEPTED")}
-                      className="bg-[#3EAF3F] text-white px-14 py-2"
-                    >
-                      {action !== "REJECTED" && orderUpdate.loading ? <Spinner /> : <>Accept</>}
-                    </button>
-                  </div>
-                )}
-                {(activeTab === "ACCEPTED" || (activeTab === "ALL" && details?.status === "ACCEPTED")) && (
-                  <div className="flex justify-center gap-40 mt-2 mb-2">
-                    <button
-                      onClick={() => handleOrderStatus("PROCESSED")}
-                      className="bg-[#3EAF3F] text-white px-14 py-2"
-                    >
-                      {action !== "REJECTED" && orderUpdate.loading ? <Spinner /> : <>PROCESSED</>}
-                    </button>
-                  </div>
-                )}
-                {(activeTab === "PROCESSED" || (activeTab === "ALL" && details?.status === "PROCESSED")) && (
-                  <div className="flex justify-center gap-40 mt-2 mb-2">
-                    <button onClick={() => handleOrderStatus("SHIPPED")} className="bg-[#3EAF3F] text-white px-14 py-2">
-                      {action !== "REJECTED" && orderUpdate.loading ? <Spinner /> : <>SHIPPED</>}
-                    </button>
-                  </div>
-                )}
-                <DeclineRequest
-                  isOpen={isModalOpen}
-                  onClose={() => setIsModalOpen(false)}
-                  onSubmit={handleOrderStatus}
-                />
-                <AcceptOrder isOpen={issModalOpen} onClose={handleGotIt} />
-              </div>
-            )}
-          </div>
-        </>
-      )}
+      <div className="flex gap-1 pb-28 items-center mt-4">
+        <button
+          className="border bg-white h-8 px-2 py-2 rounded flex items-center gap-1 disabled:opacity-50"
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+        >
+          <IoIosArrowBack />
+          Back
+        </button>
+
+        <div className="flex gap-2 flex-wrap justify-center">
+          {Array.from({ length: totalPages }, (_, i) => (
+            <button
+              key={i + 1}
+              className={`px-3 h-8 rounded border ${
+                currentPage === i + 1 ? "bg-black text-white" : "bg-white"
+              }`}
+              onClick={() => setCurrentPage(i + 1)}
+            >
+              {i + 1}
+            </button>
+          ))}
+
+          <button
+            className="border bg-white h-8 px-2 py-2 rounded flex items-center gap-1 disabled:opacity-50"
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+          >
+            Next
+            <IoIosArrowForward />
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <select className="ml-4 border rounded p-2" value={ITEMS_PER_PAGE}>
+          <option value={15}>15</option>
+        </select>
+      </div>
     </div>
-  )
+  );
 }
-
-export default Orders
-
