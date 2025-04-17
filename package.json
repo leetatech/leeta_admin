@@ -50,10 +50,11 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@types/react": "^19.0.1",
     "@types/react-dom": "^19.0.2",
     "@types/redux-thunk": "^2.1.0",
-    "netlify-cli": "^19.0.2",
-    "typescript": "^5.7.2"
+    "netlify-cli": "^16.1.0",
+    "typescript": "^5.1.6"
   }
 }
