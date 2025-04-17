@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/semi */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { type Store, type Dispatch } from 'redux';
-import store, { type RootState } from './index';
+import { type Dispatch } from 'redux';
 
 let dispatchFunction: Dispatch<any> | null = null;
 

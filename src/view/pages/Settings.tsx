@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../state';
 
 const Settings = () => {
-  const { userInfo, loading } = useSelector((state: RootState) => state.user);
+  const { userInfo } = useSelector((state: RootState) => state.user);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const navigate = useNavigate();
 

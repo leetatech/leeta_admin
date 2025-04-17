@@ -1,8 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import OrderService from './order_service';
-import * as states from './strings';
 
-interface IinitialState {
+interface InitialState {
   error: boolean;
   loading: boolean;
   orderData: Record<string, string | boolean | Record<string, string | any>[] | any>;
@@ -12,7 +11,7 @@ interface IinitialState {
   action: string;
 }
 
-const initialState: IinitialState = {
+const initialState: InitialState = {
   error: false,
   loading: false,
   orderData: {
@@ -79,7 +78,7 @@ const orderSlice = createSlice({
       state.orderData.data = action.payload!;
       state.orderData.message = '';
     });
-    builder.addCase(triggerOrderList.rejected, (state, action) => {
+    builder.addCase(triggerOrderList.rejected, (state) => {
       state.orderData.loading = true;
       state.orderData.error = false;
       state.orderData.data = {};
@@ -99,7 +98,7 @@ const orderSlice = createSlice({
       state.orderUpdate.data = action.payload!;
       state.orderUpdate.message = '';
     });
-    builder.addCase(triggerOrderUpdate.rejected, (state, action) => {
+    builder.addCase(triggerOrderUpdate.rejected, (state) => {
       state.orderUpdate.loading = true;
       state.orderUpdate.error = false;
       state.orderUpdate.data = '';
