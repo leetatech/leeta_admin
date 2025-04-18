@@ -25,13 +25,16 @@ const WhatWentWrong: React.FC<WhatWentWrongProps> = ({ onClose, onSubmit, closeD
   };
 
   useEffect(() => {
-    if (action === 'REJECTED' && orderUpdate.data.success === 'success' && !orderUpdate.error) {
+    if (
+      action === 'REJECTED' &&
+      orderUpdate.data?.success === 'success' &&
+      !orderUpdate.error
+    ) {
       setGotItModal(true);
-      // dispatch(resetStatusUpdate());
     } else if (orderUpdate.message && orderUpdate.error) {
       toast.error(`${orderUpdate.message}`);
     }
-  }, [orderUpdate]);
+  }, [action, orderUpdate]);
 
 
   return (

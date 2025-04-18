@@ -7,7 +7,6 @@
     "@lottiefiles/dotlottie-react": "^0.13.3",
     "@reduxjs/toolkit": "^2.7.0",
     "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.14.1",
@@ -51,9 +50,12 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@testing-library/react": "^16.3.0",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@types/redux-thunk": "^2.1.0",
+    "ajv": "^6.12.6",
+    "ajv-keywords": "^3.5.2",
     "netlify-cli": "^20.0.2",
     "typescript": "^5.8.3"
   }

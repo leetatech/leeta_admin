@@ -25,7 +25,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     dispatch(triggerGetUserInfo());
-  }, []);
+  }, [dispatch]);
 
   return (
     <>
