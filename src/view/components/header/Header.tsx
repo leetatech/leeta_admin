@@ -38,9 +38,6 @@ export default function Header({ shrinked, setShrinked }: IProps) {
     icon: '',
     font: '',
   });
-  // const { isMobile } = useWindowSize();
-
-  // const headData = [];
 
   useEffect(() => {}, [dropValue]);
 

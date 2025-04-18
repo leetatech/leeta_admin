@@ -1,9 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import WhatWentWrong from './whatWentWrong';
-import { resetStatusUpdate } from '../../features/orders/order_slice';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../state';
-import { toast } from 'react-toastify';
 
 interface DeclineRequestProps {
   isOpen: boolean;
@@ -12,8 +8,6 @@ interface DeclineRequestProps {
 }
 
 const DeclineRequest: React.FC<DeclineRequestProps> = ({ isOpen, onClose, onSubmit }) => {
-  const { orderUpdate } = useSelector((state: RootState) => state.order);
-  // const dispatch: AppDispatch = useDispatch();
   const [showWhatWentWrong, setShowWhatWentWrong] = useState(false);
 
   return (

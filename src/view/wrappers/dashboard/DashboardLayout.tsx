@@ -4,20 +4,18 @@ import Sidebar from '../../components/sidebar/Sidebar';
 import Header from '../../components/header/Header';
 import './DashboardLayout.css';
 import { triggerGetUserInfo } from '../../../features/auth/auth_slice';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../../state';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../../state';
 
 const Dashboard = () => {
   const dispatch: AppDispatch = useDispatch();
-  const { userInfo } = useSelector((state: RootState) => state.user);
-
   const mainRef = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
   const [shrink, setShrink] = useState(false);
   // Only the setter is needed for this case
   const [, setSiderBarOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [headTag, setHeadTag] = useState('');
+  const [, setHeadTag] = useState('');
 
   useEffect(() => {
     if (mainRef.current != null) {
@@ -27,25 +25,13 @@ const Dashboard = () => {
 
   useEffect(() => {
     dispatch(triggerGetUserInfo());
-  }, []);
+  }, [dispatch]);
 
   return (
     <>
       {/* <ErrorBoundary> */}
       <div className='dashboard-wrapper card-bg-new' id='master-container'>
         <div className='display-f'>
-          {/* for responsiveness */}
-          {/* <Modal
-              show={siderBarOpen}
-              onClose={() => {
-                setSiderBarOpen(false);
-              }}
-              from='left'
-            >
-              <div className='sidebar-content-modal'>
-                <SidebarComponent setShowLogoutModal={setShowLogoutModal} showLogoutModal={showLogoutModal} removeShrink={true} closeModal={() => setSiderBarOpen(false)} setHeadTag={setHeadTag} />
-              </div>
-            </Modal> */}
           <div className={`sidebar-content border-r ${shrink ? 'shrink' : ''}`}>
             <Sidebar
               setShowLogoutModal={setShowLogoutModal}
@@ -74,21 +60,6 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-      {/* <Modal
-          show={showLogoutModal}
-          onClose={() => {
-            setShowLogoutModal(false);
-          }}
-        >
-          <LogoutModal
-            open={showLogoutModal}
-            close={() => {
-              setShowLogoutModal(false);
-            }}
-          />
-        </Modal> */}
-      {/* <Copy /> */}
-      {/* </ErrorBoundary> */}
     </>
   );
 };

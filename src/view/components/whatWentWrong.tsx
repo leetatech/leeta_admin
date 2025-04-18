@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { GoX } from 'react-icons/go';
 import DeclineOrder from './declineOrder';
-import { AppDispatch, RootState } from '../../state';
-import { useDispatch, useSelector } from 'react-redux';
-import { resetStatusUpdate } from '../../features/orders/order_slice';
+import { RootState } from '../../state';
+import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { Spinner } from './Spinner';
 
@@ -13,10 +12,9 @@ interface WhatWentWrongProps {
   closeDecline: () => void;
 }
 const WhatWentWrong: React.FC<WhatWentWrongProps> = ({ onClose, onSubmit, closeDecline }) => {
-  const dispatch: AppDispatch = useDispatch();
   const { orderUpdate, action } = useSelector((state: RootState) => state.order);
   const [selectedReason, setSelectedReason] = useState('');
-  const [declineOrder, setDeclineOrder] = useState(false);
+  const [, setDeclineOrder] = useState(false);
   const [gotItModal, setGotItModal] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -27,13 +25,16 @@ const WhatWentWrong: React.FC<WhatWentWrongProps> = ({ onClose, onSubmit, closeD
   };
 
   useEffect(() => {
-    if (action === 'REJECTED' && orderUpdate.data.success === 'success' && !orderUpdate.error) {
+    if (
+      action === 'REJECTED' &&
+      orderUpdate.data?.success === 'success' &&
+      !orderUpdate.error
+    ) {
       setGotItModal(true);
-      // dispatch(resetStatusUpdate());
     } else if (orderUpdate.message && orderUpdate.error) {
       toast.error(`${orderUpdate.message}`);
     }
-  }, [orderUpdate]);
+  }, [action, orderUpdate]);
 
 
   return (
@@ -61,7 +62,6 @@ const WhatWentWrong: React.FC<WhatWentWrongProps> = ({ onClose, onSubmit, closeD
             ))}
             <div className='flex flex-col pt-4 gap-3 mt-4'>
               <button
-                // onClick={() => setDeclineOrder(true)}
                 type='submit'
                 className='border w-full text-[15px] border-gray-300 text-d_gray font-normal rounded-lg py-2 hover:bg-gray-50 transition-colors'
               >
