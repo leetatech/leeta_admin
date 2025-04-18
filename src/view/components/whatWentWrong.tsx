@@ -62,7 +62,6 @@ const WhatWentWrong: React.FC<WhatWentWrongProps> = ({ onClose, onSubmit, closeD
             ))}
             <div className='flex flex-col pt-4 gap-3 mt-4'>
               <button
-                // onClick={() => setDeclineOrder(true)}
                 type='submit'
                 className='border w-full text-[15px] border-gray-300 text-d_gray font-normal rounded-lg py-2 hover:bg-gray-50 transition-colors'
               >
