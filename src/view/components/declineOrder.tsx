@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React  from 'react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { AppDispatch, RootState } from '../../state';
 import { useDispatch, useSelector } from 'react-redux';
