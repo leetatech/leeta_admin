@@ -17,8 +17,7 @@ interface IAjax {
   axiosProps: Record<string, string>;
 }
 
-const URL = 'https://leetabackend-e6d948d15ae2.herokuapp.com/api';
-// const URL = 'https://staging-leet-346-admin--ngqwkg.herokuapp.com/api/';
+const URL = process.env.API_BASE_URL;
 
 // Axios instance
 export const axiosInstance = axios.create({
@@ -34,8 +33,7 @@ const requestInterceptorSuccessCB = async (successfulReq: any) => {
       ...successfulReq.data,
     };
 
-    const JSONData = JSON.stringify(dataWithCtoken);
-    successfulReq.data = JSONData;
+    successfulReq.data = JSON.stringify(dataWithCtoken);
   }
 
   const authToken = localStorage.getItem('leeta_token') ? JSON.parse(localStorage.getItem('leeta_token') as string) : null;
@@ -61,11 +59,8 @@ const requestInterceptorErrorCB = async (error: any) => {
 // Response interceptor callbacks
 // Response Success
 const responseInterceptorSuccessCB = (successRes: any) => {
-  // const store = getStore();
-  // dispatchAction(loginUser());
 
   if (successRes.config.method === 'post' || successRes.config.method === 'POST') {
-    //
   }
   return successRes;
 };
@@ -159,8 +154,6 @@ async function ajax({
   baseURL,
   headers = {},
   before = () => {},
-  after = () => {},
-  mutate = false,
   success = () => {},
   error = () => {},
   handleError = true,
@@ -194,7 +187,7 @@ async function ajax({
     url,
     // Request Method
     method,
-    // To overwrite incase
+    // To overwrite in case
     baseURL,
     // Post Data
     data,
