@@ -2,11 +2,14 @@ import {lazy} from 'react';
 import { createBrowserRouter, RouterProvider} from 'react-router-dom';
 import routeNames from './RouteNames';
 import SignIn from '../view/pages/auth/Signin';
+import path from 'path';
+import demo from '../view/pages/Demo';
 
 // Import lazy-loaded components
 const DashboardLayout = lazy(async () => await import('../view/wrappers/dashboard/DashboardLayout'));
 const Dashboard = lazy(async () => await import('../view/pages/Dashboard/Dashboard'));
 const Orders = lazy(async () => await import('../view/pages/Orders'));
+const Demo = lazy(async () => await import('../view/pages/Demo'));
 const Settings = lazy(async () => await import('../view/pages/Settings'));
 
 const Router = () => {
@@ -18,7 +21,8 @@ const Router = () => {
       children: [
         { path: routeNames.dashboard, element: <Dashboard /> },
         { path: routeNames.orders, element: <Orders /> },
-        {path: routeNames.settings, element: <Settings />}
+        {path: routeNames.settings, element: <Settings />},
+        {path: routeNames.demo, element: <Demo />},  
       ],
     },
     {
