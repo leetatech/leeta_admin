@@ -6,6 +6,7 @@ const routeNames = {
   dashboard: '/app/dashboard',
   orders: '/app/orders',
   settings: '/app/settings',
+  demo: '/app/demo',
   noWhere: '*',
 };
 

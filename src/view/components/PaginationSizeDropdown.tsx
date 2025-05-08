@@ -20,7 +20,9 @@ const PaginationSizeDropdown: React.FC<PaginationSizeDropdownProps> = ({ pageSiz
       <option value={500}>500 per page</option>
     </select>
   )
+  
 }
+
 
 export default PaginationSizeDropdown
 
