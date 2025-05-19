@@ -21,7 +21,7 @@ import Loader from "../../components/Loader"
 import { formatDate } from "../../../utilities/helpers"
 import { toast } from "react-toastify"
 import Pill from "../../components/Pill"
-import AcceptOrder from "../../components/accepttOrder"
+import AcceptOrder from "../../components/acceptOrder"
 import DeclineRequest from "../../components/declineRequest"
 
 const ITEMS_PER_PAGE = 12
@@ -63,7 +63,6 @@ function Orders() {
 
     // Always find order from allOrders
     const view = allOrders.find((row) => Number(row.order_number) === id);
-    console.log("view", view);
     if (view) {
       setDetails(view);
       dispatch(setDetailsGenState(view));
@@ -71,35 +70,19 @@ function Orders() {
   };
 
   const handleOrderStatus = (text: string, reason?: string) => {
-    dispatch(setAction(text))
-    if (text === "REJECTED") {
-      const payload = {
-        order_id: details.id,
-        order_status: "REJECTED",
-        reason,
-      }
-      dispatch(triggerOrderUpdate(payload))
-    } else {
-      const payload = {
-        order_id: details.id,
-        order_status: text,
-        reason: "",
-      }
-      dispatch(triggerOrderUpdate(payload))
-    }
-  }
+    dispatch(setAction(text));
 
-  const handleGotIt = () => {
     const payload = {
-      paging: {
-        index: 0,
-        size: pageSize,
-      },
-    }
-    dispatch(triggerOrderList(payload))
-    handleCloseDetails()
-    setIssModalOpen(false)
-  }
+      order_id: details.id,
+      order_status: text,
+      reason: text === "REJECTED" ? reason : "",
+    };
+
+    dispatch(triggerOrderUpdate(payload));
+
+    handleCloseDetails();
+    dispatch(triggerOrderList(payload));
+  };
 
   useEffect(() => {
     const orders = orderData.data.data;
@@ -112,7 +95,7 @@ function Orders() {
       setAllOrders(sortedOrders);
       setTotalOrderCount(sortedOrders.length);
     }
-  }, [orderData.data]);
+  }, [orderData]);
 
   // Fetch orders on component mount
   useEffect(() => {
@@ -265,7 +248,7 @@ function Orders() {
                                   ? 'bg-purple-100 text-purple-800'
                                   : order.status === 'SHIPPED'
                                     ? 'bg-green-100 text-green-800'
-                                    : order.status === 'CANCELLED'
+                                    : order.status === 'CANCELLED' || order.status === 'REJECTED'
                                       ? 'bg-red-100 text-red-800'
                                       : order.status === 'REJECTED'
                                         ? 'bg-gray-100 text-gray-800'
@@ -372,9 +355,9 @@ function Orders() {
               Customer Details
             </Typography>
             <span className="flex gap-2 items-center">
-        <Pill text={details?.status} />
-        <MdOutlineClose className="cursor-pointer text-xl" onClick={handleCloseDetails} />
-      </span>
+              <Pill text={details?.status} />
+              <MdOutlineClose className="cursor-pointer text-xl" onClick={handleCloseDetails} />
+            </span>
           </div>
 
           <div className="space-y-3 mb-6">
@@ -457,7 +440,7 @@ function Orders() {
                 {action === 'REJECTED' && orderUpdate.loading ? <Spinner /> : <>Decline</>}
               </button>
               <button
-                onClick={() => handleOrderStatus('ACCEPTED')}
+                onClick={() => setIssModalOpen(true)}
                 className="bg-[#3EAF3F] text-white px-8 py-2 rounded"
               >
                 {action !== 'REJECTED' && orderUpdate.loading ? <Spinner /> : <>Accept</>}
@@ -471,7 +454,7 @@ function Orders() {
                 onClick={() => handleOrderStatus('PROCESSED')}
                 className="bg-[#3EAF3F] text-white px-8 py-2 rounded"
               >
-                {orderUpdate.loading ? <Spinner /> : <>Processed</>}
+                {orderUpdate.loading ? <Spinner /> : <>PROCESSED</>}
               </button>
             </div>
           )}
@@ -482,13 +465,13 @@ function Orders() {
                 onClick={() => handleOrderStatus('SHIPPED')}
                 className="bg-[#3EAF3F] text-white px-8 py-2 rounded"
               >
-                {orderUpdate.loading ? <Spinner /> : <>Shipped</>}
+                {orderUpdate.loading ? <Spinner /> : <>SHIPPED</>}
               </button>
             </div>
           )}
 
           <DeclineRequest isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSubmit={handleOrderStatus} />
-          <AcceptOrder isOpen={issModalOpen} onClose={handleGotIt} />
+          <AcceptOrder isOpen={issModalOpen} onClose={() => setIssModalOpen(false)} onSubmit={handleOrderStatus}/>
         </div>
       )}
     </div>
