@@ -17,7 +17,7 @@ interface IAjax {
   axiosProps: Record<string, string>;
 }
 
-const URL = process.env.BACKEND_URL;
+const URL = process.env.LEETA_API_URL;
 
 // Axios instance
 export const axiosInstance = axios.create({
