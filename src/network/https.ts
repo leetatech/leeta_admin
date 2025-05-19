@@ -17,7 +17,7 @@ interface IAjax {
   axiosProps: Record<string, string>;
 }
 
-const URL = "https://leetadev-3e0fe3fe9f5b.herokuapp.com/api/";
+const URL = process.env.LEETA_API_URL;
 
 // Axios instance
 export const axiosInstance = axios.create({

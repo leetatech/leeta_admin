@@ -263,7 +263,6 @@ function Orders() {
                       </Table.Td>
                       <Table.Td className="p-3 text-[14px]">
                         <div className="flex items-center gap-1">
-                          <IoLocationOutline />
                           <span>
                             {order.delivery_details.address.lga},{" "}
                                                   {order.delivery_details.address.full_address}
