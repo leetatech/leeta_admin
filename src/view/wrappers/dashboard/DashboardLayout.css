@@ -1,8 +1,6 @@
 .dashboard-wrapper {
   position: fixed;
   line-height: 2rem !important;
-  /* background-color: green; */
-  /* display: none; */
 }
 
 .dashboard-wrapper div p {
@@ -75,8 +73,6 @@
 .dashboard-wrapper > .right {
   width: 100%;
   overflow: hidden;
-  border: 1px solid red;
-  background-color: red !important;
 }
 
 .dashboard-wrapper > .right div {
