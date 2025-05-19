@@ -1,13 +1,11 @@
 export function formatDate(timestamp: number): string {
+  const date = new Date(timestamp * 1000);
+
   const options: Intl.DateTimeFormatOptions = {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: true,
+    month: 'short',    // Jan, Feb, Mar, ...
+    day: 'numeric',    // 1, 2, 3, ...
+    year: 'numeric',   // 2025
   };
 
-  return new Date(timestamp * 1000).toLocaleString('en-US', options).replace(',', '');
+  return date.toLocaleDateString('en-US', options);
 }

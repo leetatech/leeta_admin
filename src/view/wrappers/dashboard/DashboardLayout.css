@@ -1,8 +1,6 @@
 .dashboard-wrapper {
   position: fixed;
   line-height: 2rem !important;
-  /* background-color: green; */
-  /* display: none; */
 }
 
 .dashboard-wrapper div p {
@@ -37,6 +35,8 @@
   width: 18vw;
   -webkit-transition: width 0.5s;
   transition: width 0.5s;
+  border-right: 3px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
 }
 @media (max-width: 1000px) {
   .dashboard-wrapper .sidebar-content {
@@ -65,18 +65,12 @@
 }
 
 .dashboard-wrapper .shrink {
-  /* min-height: 100vh; */
-  /* position: fixed; */
   width: 5vw !important;
-  /* -webkit-transition: width 0.5s;
-  transition: width 0.5s; */
 }
 
 .dashboard-wrapper > .right {
   width: 100%;
   overflow: hidden;
-  border: 1px solid red;
-  background-color: red !important;
 }
 
 .dashboard-wrapper > .right div {

@@ -1,9 +1,7 @@
 .sidebarComponent {
-  width: 18vw;
   height: 100vh;
   -webkit-transition: width 0.5s;
   transition: width 0.5s;
-  border-right: 1px solid #d9d9d9;
 }
 @media (max-width: 1000px) {
   .sidebarComponent {
@@ -18,7 +16,6 @@
 }
 
 .sidebarComponent .sidebarComponent__logo-div {
-  width: 18vw;
   -webkit-transition: width 0.5s;
   transition: width 0.5s;
   display: flex;
@@ -59,17 +56,11 @@
 }
 
 .sidebarComponent .sidebarComponent__navbar {
-  overflow: scroll;
-  top: 0;
-  bottom: 0px;
-  padding: 0 1.4rem;
-  /* height: 80vh; */
-  height: 88vh;
   width: 100%;
-  display: flex;
-  justify-content: space-between;
   flex-direction: column;
-  /* background-color: rgba(0, 128, 0, 0.143); */
+  justify-content: space-between;
+  box-sizing: border-box;
+  padding: 1rem;
 }
 .sidebarComponent .nav-items-wrapper {
   margin-top: 2.4rem;
@@ -85,7 +76,7 @@
 }
 
 .sidebarComponent .sidebarComponent__navbar .nav-items-con,
-.sidebarComponent .sidebarComponent__navbar .nav-items-con2 {
+.nav-items-con2 {
   display: flex;
   flex-direction: column;
   row-gap: 1.5rem;
