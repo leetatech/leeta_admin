@@ -7,7 +7,7 @@ import { triggerGetUserInfo } from '../../../features/auth/auth_slice';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../../state';
 
-const Dashboard = () => {
+const DashboardLayout = () => {
   const dispatch: AppDispatch = useDispatch();
   const mainRef = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
@@ -32,7 +32,7 @@ const Dashboard = () => {
       {/* <ErrorBoundary> */}
       <div className='dashboard-wrapper card-bg-new' id='master-container'>
         <div className='display-f'>
-          <div className={`sidebar-content border-r ${shrink ? 'shrink' : ''}`}>
+          <div className={`sidebar-content ${shrink ? 'shrink' : ''}`}>
             <Sidebar
               setShowLogoutModal={setShowLogoutModal}
               showLogoutModal={showLogoutModal}
@@ -63,4 +63,4 @@ const Dashboard = () => {
     </>
   );
 };
-export default Dashboard;
+export default DashboardLayout;

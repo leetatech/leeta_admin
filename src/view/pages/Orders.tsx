@@ -22,24 +22,6 @@ import Pill from "../components/Pill"
 import { IoLocationOutline } from "react-icons/io5"
 import PaginationSizeDropdown from "../components/PaginationSizeDropdown"
 
-//interface RowData {
-//id: number
-// customer: string
-// date: string
-//details: string
-//}
-
-//const data: RowData[] = [
-//{ id: 1, customer: "John Doe", date: "2024-12-20", details: "Order #123" },
-//{ id: 2, customer: "Jane Smith", date: "2024-12-19", details: "Order #456" },
-// { id: 3, customer: "Smith Johnson", date: "2024-12-18", details: "Order #789" },
-// { id: 4, customer: "John Doe", date: "2024-12-20", details: "Order #123" },
-//  { id: 5, customer: "Doe Smith", date: "2024-12-19", details: "Order #456" },
-  //{ id: 6, customer: "Alice Johnson", date: "2024-12-18", details: "Order #789" },
-  //{ id: 7, customer: "Alice Joel", date: "2024-12-18", details: "Order #789" },
-  //{ id: 8, customer: "Jane Joel", date: "2024-12-18", details: "Order #789" },
-//]
-
 const Orders = () => {
   const dispatch: AppDispatch = useDispatch()
   const { orderData, orderUpdate, action } = useSelector((state: RootState) => state.order)

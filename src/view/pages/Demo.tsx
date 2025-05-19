@@ -7,7 +7,6 @@ import { IoMdBriefcase } from "react-icons/io"
 import type { AppDispatch, RootState } from "../../state"
 import Typography from "../components/Typography/Typography"
 import { TypographyVariant } from "../components/types"
-import { useIcons } from "../../hooks/useIcons"
 import {
   resetStatusUpdate,
   setAction,
@@ -37,7 +36,6 @@ const ITEMS_PER_PAGE = 12
 
 function Demo() {
   const dispatch = useDispatch<AppDispatch>()
-  const icons = useIcons()
 
   // Redux state selectors - using a more generic approach
   const orderState = useSelector((state: RootState) => state.order)
@@ -54,7 +52,13 @@ function Demo() {
 
   // Fetch orders on component mount
   useEffect(() => {
-    dispatch(triggerOrderList({ page: 1, limit: pageSize }))
+    const payload = {
+      paging: {
+        index: 0,
+        size: pageSize,
+      },
+    }
+    dispatch(triggerOrderList(payload))
 
     return () => {
       // Clean up on unmount
@@ -195,7 +199,7 @@ function Demo() {
         </div>
       </div>
 
-      <div className="rounded-md border overflow-hidden">
+      <div className="rounded-md overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full bg-white">
             <thead className="bg-white">
