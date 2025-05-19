@@ -38,12 +38,6 @@ const Sidebar = ({ shrinked, setShrinked }: IProps) => {
       icon: [cart, carti],
     },
     {
-      name: 'Demo',
-      to: '/app/demo',
-      active: location.pathname.includes('demo'),
-      icon: [cart, carti],
-    },
-    {
       name: 'Settings',
       to: '/app/settings',
       active: location.pathname.includes('settings'),

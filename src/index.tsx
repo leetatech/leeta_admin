@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
+import { MantineProvider } from '@mantine/core';
 import './index.css';
 import store from './state';
 import App from './App';
@@ -9,9 +10,9 @@ import reportWebVitals from './reportWebVitals';
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <Provider store={store}>
-    <React.StrictMode>
+    <MantineProvider defaultColorScheme="light">
       <App />
-    </React.StrictMode>
+    </MantineProvider>
   </Provider>
 );
 
