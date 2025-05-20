@@ -81,4 +81,6 @@ export type Order = {
 };
 
 // Placeholder for ProductCategory – needs actual definition
-export type ProductCategory = string; // Update this as per your actual enum or structure
+export type ProductCategory =
+  | "LPG"
+  | "LNG";
