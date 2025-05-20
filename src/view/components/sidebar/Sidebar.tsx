@@ -17,7 +17,7 @@ interface IProps {
 }
 
 const Sidebar = ({ shrinked, setShrinked }: IProps) => {
-  const { shrink, logo, home, homei, cart, carti, setting, settingi, logout } = useIcons();
+  const { shrink, logo, home, homei, cart, carti, setting, settingi } = useIcons();
 
   const location = useLocation();
   // Only the setter is needed for this case
@@ -42,15 +42,6 @@ const Sidebar = ({ shrinked, setShrinked }: IProps) => {
       to: '/app/settings',
       active: location.pathname.includes('settings'),
       icon: [setting, settingi],
-    },
-  ];
-
-  const SidebarLinkNamesBottom = [
-    {
-      name: 'Log Out',
-      to: '#',
-      active: location.pathname.includes('logout'),
-      icon: [logout, logout],
     },
   ];
 
@@ -98,23 +89,6 @@ const Sidebar = ({ shrinked, setShrinked }: IProps) => {
                   />
                 </Link>
               </div>
-            ))}
-          </div>
-        </div>
-        <div className='nav-items-wrapper'>
-          <div className='nav-items-con2'>
-            {SidebarLinkNamesBottom.map(({ name, to, icon, active},idx ) => (
-              <Link to={to} key={idx}>
-                <NavItem
-                  icon={{
-                    active: icon[1],
-                    default: icon[0],
-                  }}
-                  setNav={setActiveNav}
-                  label={shrinked ? '' : name}
-                  active={active}
-                />
-              </Link>
             ))}
           </div>
         </div>
