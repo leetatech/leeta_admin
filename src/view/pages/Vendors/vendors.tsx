@@ -39,7 +39,7 @@ function Vendors() {
   return (
     <div className="relative w-full">
       <div className="p-8 pb-1">
-        <h1 className="text-3xl">User Management</h1>
+        <h1 className="text-3xl">Vendors Management</h1>
       </div>
       <div className="overflow-x-auto w-full">
         <div className="p-6 space-y-6">
