@@ -102,6 +102,9 @@ function Orders() {
 
   return (
     <div className="relative w-full">
+      <div className="p-8 pb-1">
+        <h1 className="text-3xl">Orders Management</h1>
+      </div>
       <div className="overflow-x-auto w-full">
         <div className="p-6 space-y-6">
           <OrderStats

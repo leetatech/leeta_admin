@@ -4,6 +4,8 @@ const apiRoutes = {
   orderList: '/order/admin',
   orderUpdate: '/order/status',
 
+  vendorList: '/vendor/list',
+
   getUserInfo: '/user'
 };
 

@@ -17,11 +17,22 @@ interface IProps {
 }
 
 const Sidebar = ({ shrinked, setShrinked }: IProps) => {
-  const { shrink, logo, home, homei, cart, carti, setting, settingi } = useIcons();
+  const {
+    shrink,
+    logo,
+    dashboardBox,
+    dashboardBoxGrid,
+    userGroupBlack,
+    userGroupBlue,
+    cartBlack,
+    cartBlue,
+    gearBlack,
+    gearBlue
+  } = useIcons();
 
   const location = useLocation();
   // Only the setter is needed for this case
-  const [, setActiveNav] = useState(1);
+  const [, setActiveNav] = useState(0);
   const SidebarLinkNames = [
     {
       name: 'Dashboard',
@@ -29,19 +40,25 @@ const Sidebar = ({ shrinked, setShrinked }: IProps) => {
       nav: 1,
       to: '/app/dashboard',
       active: location.pathname.includes('dashboard'),
-      icon: [home, homei],
+      icon: [dashboardBox, dashboardBoxGrid],
+    },
+    {
+      name: 'Vendors',
+      to: '/app/vendors',
+      active: location.pathname.includes('vendors'),
+      icon: [userGroupBlack, userGroupBlue],
     },
     {
       name: 'Orders',
       to: '/app/orders',
       active: location.pathname.includes('orders'),
-      icon: [cart, carti],
+      icon: [cartBlack, cartBlue],
     },
     {
       name: 'Settings',
       to: '/app/settings',
       active: location.pathname.includes('settings'),
-      icon: [setting, settingi],
+      icon: [gearBlack, gearBlue],
     },
   ];
 
@@ -72,11 +89,11 @@ const Sidebar = ({ shrinked, setShrinked }: IProps) => {
           <img src={shrink} alt='' className={`chevron ${shrinked && 'chevron-2'}`} />
         </div>
       </div>
-      <div className={`sidebarComponent__navbar ${shrinked ? 'shrink' : ''}`}>
-        <div className='nav-items-wrapper'>
-          <div className='nav-items-con'>
+      <div className={`flex flex-col bg-white dark:bg-gray-800 ${shrinked ? 'w-16' : 'w-64'} transition-all duration-300`}>
+        <div className="flex flex-col p-3 overflow-y-auto flex-1">
+          <div className="flex flex-col gap-2 p-2">
             {SidebarLinkNames.map(({ name, to, icon, active }, idx) => (
-              <div key={idx} className='nav-item'>
+              <div key={idx} className="w-full m-0.5">
                 <Link to={to}>
                   <NavItem
                     icon={{

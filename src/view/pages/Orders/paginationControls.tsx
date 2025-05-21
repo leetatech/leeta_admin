@@ -15,7 +15,6 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
                                                                  pageSize,
                                                                  setPageSize,
                                                                }) => {
-  console.log("totalOrders", totalOrders, currentPage, pageSize);
   const totalPages = Math.ceil(totalOrders / pageSize);
   const currentDisplayPage = currentPage + 1;
 

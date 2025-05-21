@@ -2,11 +2,13 @@ import { configureStore } from '@reduxjs/toolkit';
 import { setDispatchFunction } from './storeInstance';
 import authReducer from '../features/auth/auth_slice';
 import orderReducer from '../features/orders/order_slice';
+import vendorReducer from '../features/vendors/vendor_slice';
 
 const store = configureStore({
   reducer: { 
     user: authReducer,
-    order: orderReducer 
+    order: orderReducer,
+    vendors: vendorReducer
   },
 });
 
