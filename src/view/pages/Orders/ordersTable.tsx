@@ -29,7 +29,7 @@ const OrdersTable: React.FC<OrdersTableProps> = ({
   };
 
   return (
-    <div className="w-full rounded-md border overflow-hidden relative">
+    <div className="w-full rounded-md overflow-hidden relative">
       <Table striped highlightOnHover withTableBorder className="min-w-full w-full table-auto bg-white">
         <Table.Thead className="bg-blue-50">
           <Table.Tr>
