@@ -3,6 +3,8 @@ import DashboardStats from './DashboardStats';
 import filtericon from "../../../assets/Utility Icons (heroicons-mini) (2).svg"
 import DashboardMap from './DashboardMap';
 import PieChart from './PieChart';
+import BarChartLayout from './BarChartLayer';
+import Performance from './Performance';
 
 const Dashboard = () => {
   return (
@@ -30,6 +32,10 @@ const Dashboard = () => {
       <div className='flex p-7 gap-8'>
         <DashboardMap />
         <PieChart/>
+      </div>
+      <div className='flex p-7 gap-8'>
+        <BarChartLayout />
+        <Performance />
       </div>
     </div>
   );
